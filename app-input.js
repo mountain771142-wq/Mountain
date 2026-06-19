@@ -1,0 +1,46 @@
+const setUp = () => {
+    let part1 = document.querySelector("#part1");
+    let part2 = document.querySelector("#part2");
+    let color = document.querySelector("#color").value;
+    let color_placeholder = document.querySelector("#animated");
+    let text = document.querySelector("#word").value;
+    let qrText = document.querySelector("#qrText").value; // 🔥 جلب النص للـ QR
+    let word_placeholder = document.querySelector(".word-holder");
+    let bgcolor = ["blue-pic.png", "orange-pic.png", "green-pic.jpeg", "grey-pic.jpeg", "pink-pic.png"];
+    let first4 = color.substring(0, 4);
+    
+    // تغيير الخلفية حسب اللون
+    for (let i = 0; i < bgcolor.length; i++) {
+        let bg4 = bgcolor[i].substring(0, 4);
+        if(first4.toLowerCase() == bg4.toLowerCase()){
+            color_placeholder.style.backgroundImage = `url('img/${bgcolor[i]}')`;
+            break;
+        }
+    }
+    
+    // إظهار التذكرة وإخفاء الإدخال
+    part1.style.display = "none";
+    part2.style.display = "block";
+    word_placeholder.innerHTML = text;
+
+    // 🔥 تحديث QR Code
+    generateQR(qrText);
+};
+
+// 🔥 دالة توليد QR Code
+function generateQR(text) {
+    const qrContainer = document.getElementById('qrContainer');
+    qrContainer.innerHTML = ''; // مسح القديم
+    if (text.trim() === '') {
+        qrContainer.innerHTML = '<p style="color:black; text-align:center;">أدخل نصاً للـ QR</p>';
+        return;
+    }
+    new QRCode(qrContainer, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
