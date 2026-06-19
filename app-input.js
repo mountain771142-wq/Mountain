@@ -3,9 +3,7 @@ const setUp = () => {
     let part2 = document.querySelector("#part2");
     let color = document.querySelector("#color").value;
     let color_placeholder = document.querySelector("#animated");
-    let text = document.querySelector("#word").value;
-    let qrText = document.querySelector("#qrText").value; // 🔥 جلب النص للـ QR
-    let word_placeholder = document.querySelector(".word-holder");
+    let qrText = document.querySelector("#qrText").value; // جلب النص للـ QR فقط
     let bgcolor = ["blue-pic.png", "orange-pic.png", "green-pic.jpeg", "grey-pic.jpeg", "pink-pic.png"];
     let first4 = color.substring(0, 4);
     
@@ -21,7 +19,6 @@ const setUp = () => {
     // إظهار التذكرة وإخفاء الإدخال
     part1.style.display = "none";
     part2.style.display = "block";
-    word_placeholder.innerHTML = text;
 
     // 🔥 تحديث QR Code
     generateQR(qrText);
@@ -30,7 +27,7 @@ const setUp = () => {
 // 🔥 دالة توليد QR Code
 function generateQR(text) {
     const qrContainer = document.getElementById('qrContainer');
-    qrContainer.innerHTML = ''; // مسح القديم
+    qrContainer.innerHTML = '';
     if (text.trim() === '') {
         qrContainer.innerHTML = '<p style="color:black; text-align:center;">أدخل نصاً للـ QR</p>';
         return;
