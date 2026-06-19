@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="buspass.css">
     <link rel="stylesheet" href="palette.css">
@@ -29,13 +29,9 @@
                     <option value="pink">Pink</option>
                 </select>    
             </div>
+            <!-- 🔥 حقل QR Code فقط (تم حذف حقل النص القديم) -->
             <div class="word">
-                <p style="color: black;">What text would you like the app to display?</p>
-                <input type="text" name="word" id="word">
-            </div>
-            <!-- 🔥 حقل جديد للـ QR -->
-            <div class="word">
-                <p style="color: black;">What text for QR code?</p>
+                <p style="color: black;">QR Code</p>
                 <input type="text" name="qrText" id="qrText" placeholder="أدخل النص للـ QR">
             </div>
             <div class="submit">
@@ -67,8 +63,8 @@
             <div class="grid-item align">Buy Tickets</div>
         </div>
         <div class="container">
-            <div class="wrapper">
-                <!-- 🔥 حاوية الـ QR الجديدة (ديناميكية) -->
+            <div class="wrapper" id="ticketWrapper">
+                <!-- حاوية الـ QR الجديدة (ديناميكية) -->
                 <div class="qr_wrapper" id="qrContainer">
                     <!-- سيتم توليد QR Code هنا -->
                 </div>
@@ -81,7 +77,7 @@
                             <h1>1 Adult</h1>
                         </div>
                         <div class="grid-item passtype-element" style="text-align:right;">
-                            <h1>£5</h1> <!-- 🔥 تغيير السعر إلى 5 -->
+                            <h1>£5</h1>
                         </div>
                     </div>
                 </div>
