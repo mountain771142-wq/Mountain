@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>تذكرتي</title>
+    <title>Your ticket</title>
     <style>
-        /* ===== إعدادات عامة ===== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -18,7 +17,6 @@
             padding: 16px;
         }
 
-        /* ===== بطاقة التذكرة ===== */
         .ticket-card {
             max-width: 380px;
             width: 100%;
@@ -32,7 +30,6 @@
             overflow: hidden;
         }
 
-        /* ===== الهيدر (Your ticket - Close) ===== */
         .ticket-header {
             display: flex;
             justify-content: space-between;
@@ -53,7 +50,6 @@
             cursor: default;
         }
 
-        /* ===== نوع التذكرة (Adult) ===== */
         .ticket-type {
             font-size: 16px;
             font-weight: 600;
@@ -68,7 +64,6 @@
             color: #1e293b;
         }
 
-        /* ===== العداد ===== */
         .ticket-expiry {
             font-size: 26px;
             font-weight: 700;
@@ -82,7 +77,6 @@
             margin-right: 6px;
         }
 
-        /* ===== حاوية النحلة ===== */
         .bee-divider {
             display: flex;
             justify-content: center;
@@ -91,7 +85,6 @@
             position: relative;
             height: 50px;
         }
-        /* الخط الفاصل */
         .bee-divider::before {
             content: '';
             position: absolute;
@@ -103,7 +96,6 @@
             transform: translateY(-50%);
             z-index: 0;
         }
-        /* النحلة فوق الخط */
         .flying-bee {
             position: relative;
             z-index: 1;
@@ -120,7 +112,6 @@
             100% { transform: translateX(-40px) scaleX(1); }
         }
 
-        /* ===== اسم التذكرة ===== */
         .ticket-name {
             font-size: 20px;
             font-weight: 700;
@@ -128,7 +119,6 @@
             margin: 6px 0 10px;
         }
 
-        /* ===== التفاصيل ===== */
         .ticket-details {
             font-size: 15px;
             color: #1e293b;
@@ -144,7 +134,6 @@
             margin-top: 4px;
         }
 
-        /* ===== زر View details ===== */
         .view-details {
             display: inline-block;
             background: #007aff;
@@ -162,7 +151,6 @@
             background: #005bb5;
         }
 
-        /* ===== تذييل ===== */
         .footnote {
             text-align: center;
             font-size: 11px;
@@ -175,46 +163,37 @@
 
     <div class="ticket-card">
 
-        <!-- ===== الهيدر ===== -->
         <div class="ticket-header">
             <span class="ticket-title">Your ticket</span>
             <span class="ticket-close">Close</span>
         </div>
 
-        <!-- ===== نوع التذكرة ===== -->
         <div class="ticket-type">
             <span>Adult</span>
         </div>
 
-        <!-- ===== العداد ===== -->
         <div class="ticket-expiry">
             <small>Expires in</small> <span id="timer">12 hrs 38 min.</span>
         </div>
 
-        <!-- ===== النحلة فوق الخط الفاصل ===== -->
         <div class="bee-divider">
             <img src="img/bee.png" alt="bee" class="flying-bee" id="beeImage">
         </div>
 
-        <!-- ===== اسم التذكرة ===== -->
         <div class="ticket-name">1 Day Bee AnyBus</div>
 
-        <!-- ===== التفاصيل ===== -->
         <div class="ticket-details">
             <div class="check">✅ Valid on any bus in Greater Manchester</div>
             <div class="lock">🔒 Ticket locked to this device</div>
         </div>
 
-        <!-- ===== زر View details ===== -->
         <button class="view-details" onclick="alert('View details clicked!')">View details</button>
 
-        <!-- ===== تذييل ===== -->
         <div class="footnote">🐝 Bee Network | Powered by TfGM</div>
 
     </div>
 
     <script>
-        // ===== العداد التنازلي التلقائي =====
         let endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
         let countDownDate = endOfDay.getTime();
