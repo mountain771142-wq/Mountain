@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your ticket</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,6 @@
             margin: 0;
             padding: 16px;
         }
-
         .ticket-card {
             max-width: 380px;
             width: 100%;
@@ -26,171 +25,45 @@
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
             border: 1px solid #f0f0f0;
             color: #111827;
-            position: relative;
-            overflow: hidden;
         }
-
         .ticket-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding-bottom: 14px;
             border-bottom: 2px solid #f1f5f9;
             margin-bottom: 12px;
         }
-        .ticket-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0b1a33;
-        }
-        .ticket-close {
-            color: #007aff;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: default;
-        }
-
-        .ticket-type {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 6px;
-        }
-        .ticket-type span {
-            background: #f1f5f9;
-            padding: 4px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            color: #1e293b;
-        }
-
-        .ticket-expiry {
-            font-size: 26px;
-            font-weight: 700;
-            color: #0b1a33;
-            margin: 8px 0 8px;
-        }
-        .ticket-expiry small {
-            font-size: 16px;
-            font-weight: 500;
-            color: #475569;
-            margin-right: 6px;
-        }
-
-        .bee-divider {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 4px 0 14px;
-            position: relative;
-            height: 50px;
-        }
-        .bee-divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            right: 5%;
-            height: 2px;
-            background: #e5e7eb;
-            transform: translateY(-50%);
-            z-index: 0;
-        }
-        .flying-bee {
-            position: relative;
-            z-index: 1;
-            background: #ffffff;
-            padding: 0 16px;
-            width: 50px;
-            animation: flyBee 5s linear infinite;
-        }
-        @keyframes flyBee {
-            0% { transform: translateX(-40px) scaleX(1); }
-            49% { transform: translateX(40px) scaleX(1); }
-            50% { transform: translateX(40px) scaleX(-1); }
-            99% { transform: translateX(-40px) scaleX(-1); }
-            100% { transform: translateX(-40px) scaleX(1); }
-        }
-
-        .ticket-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0b1a33;
-            margin: 6px 0 10px;
-        }
-
-        .ticket-details {
-            font-size: 15px;
-            color: #1e293b;
-            line-height: 1.6;
-            margin: 6px 0 14px;
-        }
-        .ticket-details .check {
-            color: #16a34a;
-            font-weight: 600;
-        }
-        .ticket-details .lock {
-            display: inline-block;
-            margin-top: 4px;
-        }
-
-        .view-details {
-            display: inline-block;
-            background: #007aff;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 6px;
-            transition: 0.2s;
-        }
-        .view-details:hover {
-            background: #005bb5;
-        }
-
-        .footnote {
-            text-align: center;
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 16px;
-        }
+        .ticket-title { font-size: 20px; font-weight: 700; color: #0b1a33; }
+        .ticket-close { color: #007aff; font-weight: 600; font-size: 16px; }
+        .ticket-type { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
+        .ticket-expiry { font-size: 26px; font-weight: 700; color: #0b1a33; margin: 8px 0; }
+        .ticket-expiry small { font-size: 16px; font-weight: 500; color: #475569; margin-right: 6px; }
+        .ticket-name { font-size: 20px; font-weight: 700; color: #0b1a33; margin: 6px 0 10px; }
+        .ticket-details { font-size: 15px; color: #1e293b; line-height: 1.6; margin: 6px 0 14px; }
+        .view-details { background: #007aff; color: white; border: none; padding: 12px 28px; border-radius: 40px; font-weight: 700; font-size: 16px; cursor: pointer; }
+        .footnote { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 16px; }
+        .bee-placeholder { font-size: 40px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div class="ticket-card">
-
         <div class="ticket-header">
             <span class="ticket-title">Your ticket</span>
             <span class="ticket-close">Close</span>
         </div>
-
-        <div class="ticket-type">
-            <span>Adult</span>
-        </div>
-
+        <div class="ticket-type">Adult</div>
         <div class="ticket-expiry">
             <small>Expires in</small> <span id="timer">12 hrs 38 min.</span>
         </div>
-
-        <div class="bee-divider">
-            <img src="img/bee.png" alt="bee" class="flying-bee" id="beeImage">
-        </div>
-
+        <div class="bee-placeholder">🐝 (النحلة ستظهر هنا)</div>
         <div class="ticket-name">1 Day Bee AnyBus</div>
-
         <div class="ticket-details">
-            <div class="check">✅ Valid on any bus in Greater Manchester</div>
-            <div class="lock">🔒 Ticket locked to this device</div>
+            <div>✅ Valid on any bus in Greater Manchester</div>
+            <div>🔒 Ticket locked to this device</div>
         </div>
-
         <button class="view-details" onclick="alert('View details clicked!')">View details</button>
-
         <div class="footnote">🐝 Bee Network | Powered by TfGM</div>
-
     </div>
 
     <script>
