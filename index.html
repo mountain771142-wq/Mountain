@@ -24,16 +24,17 @@
             overflow: hidden;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
             position: relative;
-            aspect-ratio: 9 / 16;
             background-image: url('img/template1.jfif');
-            background-size: cover;
+            background-size: 100% 100%; /* تغطية كاملة */
             background-position: center;
             background-repeat: no-repeat;
+            aspect-ratio: 9 / 16; /* نسبة العرض للطول */
         }
 
+        /* ===== النحلة ===== */
         .bee-overlay {
             position: absolute;
-            top: 48%;
+            top: 52%; /* عدل حسب مكان النحلة في القالب */
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -48,9 +49,10 @@
             100% { transform: translateX(-50px) scaleX(1); }
         }
 
+        /* ===== العداد ===== */
         .timer-overlay {
             position: absolute;
-            top: 36%;
+            top: 36%; /* عدل حسب مكان العداد في القالب */
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
