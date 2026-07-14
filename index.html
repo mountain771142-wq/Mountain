@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Your ticket</title>
+    <title>تذكرتي</title>
     <style>
+        /* ===== إعدادات عامة ===== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -17,71 +18,203 @@
             padding: 16px;
         }
 
+        /* ===== بطاقة التذكرة ===== */
         .ticket-card {
-            max-width: 420px;
+            max-width: 380px;
             width: 100%;
+            background: #ffffff;
             border-radius: 28px;
-            overflow: hidden;
+            padding: 28px 22px 24px;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
+            border: 1px solid #f0f0f0;
+            color: #111827;
             position: relative;
-            background-image: url('img/template1.jfif');
-            background-size: 100% 100%; /* تغطية كاملة */
-            background-position: center;
-            background-repeat: no-repeat;
-            aspect-ratio: 9 / 16; /* نسبة العرض للطول */
+            overflow: hidden;
         }
 
-        /* ===== النحلة ===== */
-        .bee-overlay {
-            position: absolute;
-            top: 52%; /* عدل حسب مكان النحلة في القالب */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-            width: 50px;
-            animation: flyBee 4s linear infinite;
+        /* ===== الهيدر (Your ticket - Close) ===== */
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #f1f5f9;
+            margin-bottom: 12px;
         }
-        @keyframes flyBee {
-            0% { transform: translateX(-50px) scaleX(1); }
-            49% { transform: translateX(50px) scaleX(1); }
-            50% { transform: translateX(50px) scaleX(-1); }
-            99% { transform: translateX(-50px) scaleX(-1); }
-            100% { transform: translateX(-50px) scaleX(1); }
-        }
-
-        /* ===== العداد ===== */
-        .timer-overlay {
-            position: absolute;
-            top: 36%; /* عدل حسب مكان العداد في القالب */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+        .ticket-title {
             font-size: 20px;
             font-weight: 700;
             color: #0b1a33;
-            background: rgba(255, 255, 255, 0.6);
+        }
+        .ticket-close {
+            color: #007aff;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: default;
+        }
+
+        /* ===== نوع التذكرة (Adult) ===== */
+        .ticket-type {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+        .ticket-type span {
+            background: #f1f5f9;
             padding: 4px 16px;
             border-radius: 30px;
-            white-space: nowrap;
-        }
-        .timer-overlay small {
             font-size: 14px;
+            color: #1e293b;
+        }
+
+        /* ===== العداد ===== */
+        .ticket-expiry {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0b1a33;
+            margin: 8px 0 8px;
+        }
+        .ticket-expiry small {
+            font-size: 16px;
             font-weight: 500;
             color: #475569;
             margin-right: 6px;
+        }
+
+        /* ===== حاوية النحلة ===== */
+        .bee-divider {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 4px 0 14px;
+            position: relative;
+            height: 50px;
+        }
+        /* الخط الفاصل */
+        .bee-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: #e5e7eb;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        /* النحلة فوق الخط */
+        .flying-bee {
+            position: relative;
+            z-index: 1;
+            background: #ffffff;
+            padding: 0 16px;
+            width: 50px;
+            animation: flyBee 5s linear infinite;
+        }
+        @keyframes flyBee {
+            0% { transform: translateX(-40px) scaleX(1); }
+            49% { transform: translateX(40px) scaleX(1); }
+            50% { transform: translateX(40px) scaleX(-1); }
+            99% { transform: translateX(-40px) scaleX(-1); }
+            100% { transform: translateX(-40px) scaleX(1); }
+        }
+
+        /* ===== اسم التذكرة ===== */
+        .ticket-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b1a33;
+            margin: 6px 0 10px;
+        }
+
+        /* ===== التفاصيل ===== */
+        .ticket-details {
+            font-size: 15px;
+            color: #1e293b;
+            line-height: 1.6;
+            margin: 6px 0 14px;
+        }
+        .ticket-details .check {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .ticket-details .lock {
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* ===== زر View details ===== */
+        .view-details {
+            display: inline-block;
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: 0.2s;
+        }
+        .view-details:hover {
+            background: #005bb5;
+        }
+
+        /* ===== تذييل ===== */
+        .footnote {
+            text-align: center;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 16px;
         }
     </style>
 </head>
 <body>
 
     <div class="ticket-card">
-        <img src="img/bee.png" alt="bee" class="bee-overlay">
-        <div class="timer-overlay">
+
+        <!-- ===== الهيدر ===== -->
+        <div class="ticket-header">
+            <span class="ticket-title">Your ticket</span>
+            <span class="ticket-close">Close</span>
+        </div>
+
+        <!-- ===== نوع التذكرة ===== -->
+        <div class="ticket-type">
+            <span>Adult</span>
+        </div>
+
+        <!-- ===== العداد ===== -->
+        <div class="ticket-expiry">
             <small>Expires in</small> <span id="timer">12 hrs 38 min.</span>
         </div>
+
+        <!-- ===== النحلة فوق الخط الفاصل ===== -->
+        <div class="bee-divider">
+            <img src="img/bee.png" alt="bee" class="flying-bee" id="beeImage">
+        </div>
+
+        <!-- ===== اسم التذكرة ===== -->
+        <div class="ticket-name">1 Day Bee AnyBus</div>
+
+        <!-- ===== التفاصيل ===== -->
+        <div class="ticket-details">
+            <div class="check">✅ Valid on any bus in Greater Manchester</div>
+            <div class="lock">🔒 Ticket locked to this device</div>
+        </div>
+
+        <!-- ===== زر View details ===== -->
+        <button class="view-details" onclick="alert('View details clicked!')">View details</button>
+
+        <!-- ===== تذييل ===== -->
+        <div class="footnote">🐝 Bee Network | Powered by TfGM</div>
+
     </div>
 
     <script>
+        // ===== العداد التنازلي التلقائي =====
         let endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
         let countDownDate = endOfDay.getTime();
