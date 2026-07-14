@@ -24,17 +24,16 @@
             overflow: hidden;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
             position: relative;
-            aspect-ratio: 9 / 16; /* نسبة العرض للطول */
+            aspect-ratio: 9 / 16;
             background-image: url('img/template1.jfif');
-            background-size: cover; /* تغطية كامل المساحة */
-            background-position: center; /* توسيط الصورة */
+            background-size: cover;
+            background-position: center;
             background-repeat: no-repeat;
         }
 
-        /* النحلة المتحركة */
         .bee-overlay {
             position: absolute;
-            top: 55%; /* اضبط مكان النحلة حسب القالب */
+            top: 48%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -49,10 +48,9 @@
             100% { transform: translateX(-50px) scaleX(1); }
         }
 
-        /* العداد التلقائي */
         .timer-overlay {
             position: absolute;
-            top: 44%; /* اضبط مكان العداد حسب القالب */
+            top: 36%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -75,17 +73,13 @@
 <body>
 
     <div class="ticket-card">
-        <!-- النحلة المتحركة -->
         <img src="img/bee.png" alt="bee" class="bee-overlay">
-
-        <!-- العداد التلقائي -->
         <div class="timer-overlay">
             <small>Expires in</small> <span id="timer">12 hrs 38 min.</span>
         </div>
     </div>
 
     <script>
-        // العداد التلقائي
         let endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
         let countDownDate = endOfDay.getTime();
