@@ -2,114 +2,110 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="buspass.css">
-    <link rel="stylesheet" href="palette.css">
-    <link rel="stylesheet" href="style.css">
-    <title>Bus Pass</title>
-    <link rel="apple-touch-icon" href="apple-icon-180.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- مكتبة QR Code -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="app-input.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Your ticket</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+        }
+
+        .ticket-card {
+            max-width: 420px;
+            width: 100%;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
+            position: relative;
+            background: #ffffff;
+        }
+
+        .ticket-background {
+            width: 100%;
+            display: block;
+        }
+
+        /* ===== النحلة المتحركة ===== */
+        .bee-overlay {
+            position: absolute;
+            top: 48%; /* اضبط هذه النسبة حسب مكان النحلة في القالب */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            width: 50px;
+            animation: flyBee 4s linear infinite;
+        }
+        @keyframes flyBee {
+            0% { transform: translateX(-50px) scaleX(1); }
+            49% { transform: translateX(50px) scaleX(1); }
+            50% { transform: translateX(50px) scaleX(-1); }
+            99% { transform: translateX(-50px) scaleX(-1); }
+            100% { transform: translateX(-50px) scaleX(1); }
+        }
+
+        /* ===== العداد التلقائي ===== */
+        .timer-overlay {
+            position: absolute;
+            top: 36%; /* اضبط هذه النسبة حسب مكان العداد في القالب */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0b1a33;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 4px 16px;
+            border-radius: 30px;
+            white-space: nowrap;
+        }
+        .timer-overlay small {
+            font-size: 16px;
+            font-weight: 500;
+            color: #475569;
+            margin-right: 6px;
+        }
+    </style>
 </head>
 <body>
-    <!-- ===== الجزء الأول: الإدخال ===== -->
-    <div id="part1">
-        <div class="container-part1">
-            <div class="color">
-                <p style="color: black;">What colour would you like the app to display?</p>
-                <select name="color" id="color">
-                    <option value="orange">Orange</option>
-                    <option value="blue">Blue</option>
-                    <option value="green">Green</option>
-                    <option value="grey">Grey</option>
-                    <option value="pink">Pink</option>
-                </select>    
-            </div>
-            <!-- 🔥 حقل QR Code فقط (تم حذف حقل النص القديم) -->
-            <div class="word">
-                <p style="color: black;">QR Code</p>
-                <input type="text" name="qrText" id="qrText" placeholder="أدخل النص للـ QR">
-            </div>
-            <div class="submit">
-                <button class="submit" onclick="setUp()">
-                    OK
-                </button>
-            </div>
+
+    <div class="ticket-card">
+        <!-- القالب كخلفية -->
+        <img src="img/template1.jfif" alt="ticket template" class="ticket-background">
+
+        <!-- النحلة المتحركة -->
+        <img src="img/bee.png" alt="bee" class="bee-overlay">
+
+        <!-- العداد التلقائي -->
+        <div class="timer-overlay">
+            <small>Expires in</small> <span id="timer">12 hrs 38 min.</span>
         </div>
     </div>
 
-    <!-- ===== الجزء الثاني: التذكرة ===== -->
-    <div id="part2">
-        <nav>
-            <div class="grid-container-3">
-                <div class="grid-item">
-                    <li class="first"></li>
-                    <li class="second"></li>
-                    <li class="third"></li>
-                </div>
-                <div class="grid-item align">
-                    <h1 class="header">Tickets</h1>
-                </div>
-                <div class="grid-item imageDiv"><img src="img/cart-flipped.png" alt="cart"></div>
-            </div>
-        </nav>
-        <div class="grid-container-3 links">
-            <div class="grid-item align active">Active Tickets</div>
-            <div class="grid-item align">My Tickets</div>
-            <div class="grid-item align">Buy Tickets</div>
-        </div>
-        <div class="container">
-            <div class="wrapper" id="ticketWrapper">
-                <!-- حاوية الـ QR الجديدة (ديناميكية) -->
-                <div class="qr_wrapper" id="qrContainer">
-                    <!-- سيتم توليد QR Code هنا -->
-                </div>
-                <div class="passname">
-                    <h1>Manchester <br> Day MegaRider</h1>
-                </div>
-                <div class="passtype">
-                    <div class="grid-container-2">
-                        <div class="grid-item passtype-element">
-                            <h1>1 Adult</h1>
-                        </div>
-                        <div class="grid-item passtype-element" style="text-align:right;">
-                            <h1>£5</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="valid">
-                    <p>Valid from: 00:00, <span id="date"></span></p>
-                </div>
-                <div id="animated" class="clockwise">
-                    <h1 id="time"></h1>
-                    <p class="word-holder">Hello</p>
-                </div>
-                <div class="countdown">
-                    <p class="countdown_text">Ticket expires in</p>
-                    <p id="timer"></p>
-                </div>
-                <div class="ticket_id">
-                    <p>1241-<span id="id_date"></span>133-438</p>
-                </div>
-                <div class="bottom">
-                    <p>More details <span class="to">&gt;</span></p>
-                </div>
-            </div>
-            <footer></footer>
-        </div>
-    </div>
-
-    <script src="buspass.js"></script>
     <script>
-        window.addEventListener("click", (event) => {
-            document.documentElement.requestFullscreen().catch((e) => {
-                console.log(e);
-            });
-        });
+        // العداد التلقائي
+        let endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+        let countDownDate = endOfDay.getTime();
+
+        setInterval(function() {
+            let now = new Date().getTime();
+            let distance = countDownDate - now;
+            if (distance > 0) {
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById('timer').textContent = hours + " hrs " + minutes + " min.";
+            } else {
+                document.getElementById('timer').textContent = "EXPIRED";
+            }
+        }, 1000);
     </script>
+
 </body>
 </html>
