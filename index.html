@@ -102,7 +102,7 @@
             cursor: pointer;
         }
 
-        /* جسم التذكرة */
+        /* جسم التذكرة الملون */
         .ticket-body {
             padding: 16px;
             background-color: #f4f6f8;
@@ -111,12 +111,13 @@
         .ticket-card {
             background: #ffffff;
             border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
             border: 1px solid #eef0f2;
             overflow: hidden;
+            position: relative;
         }
 
-        /* شريط التذكرة العلوي (Multi / Adult) بأيقونات خطية */
+        /* شريط التذكرة العلوي المتطابق */
         .ticket-info-bar {
             background-color: #cee5e3;
             padding: 12px 16px;
@@ -131,13 +132,17 @@
         .info-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .info-icon {
             width: 18px;
             height: 18px;
-            fill: #2c3e50;
+            fill: none;
+            stroke: #2c3e50;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* قسم الـ QR */
@@ -149,7 +154,7 @@
             background: #fff;
         }
 
-        /* شريط الصلاحية الأخضر الفاتح */
+        /* شريط الوقت الأخضر المبهت */
         .timer-bar {
             background-color: #eaf6ed;
             color: #1e7041;
@@ -167,61 +172,61 @@
         .timer-bar svg {
             width: 16px;
             height: 16px;
-            fill: #1e7041;
+            fill: none;
+            stroke: #1e7041;
+            stroke-width: 2.2;
         }
 
-        /* الفاصل الحركي الذكي مع قواطع داخلية هندسية (Notches) */
+        /* الفاصل الحركي مع قواطع داخلية مفرغة تماماً وبدون أي حواف بارزة */
         .animation-divider {
             position: relative;
-            height: 48px;
+            height: 52px; /* زيادة طفيفة لاستيعاب الحجم الجديد للشعار */
             background: #ffffff;
             display: flex;
             align-items: center;
+            overflow: visible;
         }
 
         .divider-line {
-            width: 100%;
+            width: calc(100% - 24px);
+            margin: 0 auto;
             height: 1px;
-            background: #e5e7eb;
+            background: #eef1f4;
             position: absolute;
             top: 50%;
-            left: 0;
+            left: 12px;
             z-index: 1;
         }
 
-        /* قواطع جانبية غائرة مفرغة للداخل تماماً */
+        /* تصميم القواطع الغائرة للداخل */
         .notch {
             position: absolute;
             width: 18px;
-            height: 24px;
-            background-color: #f4f6f8; /* نفس لون خلفية الـ ticket-body لتبدو مفرغة */
-            z-index: 2;
+            height: 18px;
+            background-color: #f4f6f8;
+            border-radius: 50%;
+            z-index: 4;
             top: 50%;
             transform: translateY(-50%);
+            box-shadow: inset 0 0 1px rgba(0,0,0,0.06);
         }
 
         .notch-left {
-            left: 0;
-            border-radius: 0 12px 12px 0;
-            border: 1px solid #eef0f2;
-            border-left: none;
+            left: -9px;
         }
 
         .notch-right {
-            right: 0;
-            border-radius: 12px 0 0 12px;
-            border: 1px solid #eef0f2;
-            border-right: none;
+            right: -9px;
         }
 
-        /* حاوية الشعار الأصلي المتحرك */
+        /* حاوية الشعار الأصلي بتكبيرها الجديد (مماثل تماماً للتطبيق الرسمي) */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             z-index: 3;
-            width: 44px;
-            height: 44px;
+            width: 58px;  /* تكبير الحجم من 44px إلى 58px */
+            height: 58px; /* تكبير الحجم من 44px إلى 58px */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -234,9 +239,10 @@
             object-fit: contain;
         }
 
+        /* تحديث مسار الحركة لتجنب الاصطدام بالقواطع الجانبية بعد التكبير */
         @keyframes moveLeftRight {
             0% { left: 24px; }
-            100% { left: calc(100% - 68px); }
+            100% { left: calc(100% - 82px); }
         }
 
         /* تفاصيل النص السفلي */
@@ -271,7 +277,7 @@
             text-align: left;
         }
 
-        /* تصميم الأيقونات المخصصة */
+        /* تصميم أيقونة علامة الصح الممتلئة الدائرية */
         .custom-icon-check {
             width: 18px;
             height: 18px;
@@ -283,14 +289,10 @@
             flex-shrink: 0;
         }
 
-        .custom-icon-check::after {
-            content: '';
-            width: 4px;
-            height: 8px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            margin-bottom: 2px;
+        .custom-icon-check svg {
+            width: 10px;
+            height: 10px;
+            fill: #ffffff;
         }
 
         .custom-icon-lock {
@@ -364,17 +366,29 @@
         <div class="ticket-body">
             <div class="ticket-card">
                 
-                <!-- شريط معلومات التذكرة بأيقونات SVG رمادية خطية -->
+                <!-- شريط معلومات التذكرة بأيقونات SVG رمادية خطية دقيقة جداً -->
                 <div class="ticket-info-bar">
                     <div class="info-item">
+                        <!-- أيقونة الأتوبيس والترام الرسمية مع خط مائل بينهما -->
                         <svg class="info-icon" viewBox="0 0 24 24">
-                            <path d="M4 16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-5c0-3.3-2.7-6-6-6V3c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v2c-3.3 0-6 2.7-6 6v5zm4 0v-5c0-2.2 1.8-4 4-4s4 1.8 4 4v5H8zM6 19v1c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-1H6z"/>
+                            <!-- الأتوبيس الصغير -->
+                            <rect x="2" y="6" width="8" height="10" rx="1.5" />
+                            <circle cx="4" cy="16" r="1" />
+                            <circle cx="8" cy="16" r="1" />
+                            <line x1="2" y1="10" x2="10" y2="10" />
+                            <!-- الخط المائل الفاصل -->
+                            <line x1="12" y1="4" x2="12" y2="20" />
+                            <!-- الترام الصغير -->
+                            <rect x="14" y="6" width="8" height="10" rx="1.5" />
+                            <line x1="14" y1="13" x2="22" y2="13" />
+                            <path d="M16 16h4" />
                         </svg>
                         <span>Multi</span>
                     </div>
                     <div class="info-item">
                         <svg class="info-icon" viewBox="0 0 24 24">
-                            <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/>
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
                         </svg>
                         <span>Adult</span>
                     </div>
@@ -388,12 +402,13 @@
                 <!-- شريط الوقت المتبقي وصلاحية التذكرة -->
                 <div class="timer-bar">
                     <svg viewBox="0 0 24 24">
-                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
                     </svg>
                     <div>Expires in <span id="countdown_timer">12 hrs 38 min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي الهندسي الذكي مع قواطع جانبية داخلية -->
+                <!-- الفاصل الحركي المقصوص جانبياً بشكل سليم ومطابق -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
@@ -411,13 +426,18 @@
                     
                     <ul class="details-list">
                         <li class="details-item">
-                            <span class="custom-icon-check"></span>
+                            <span class="custom-icon-check">
+                                <svg viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
                             <span>Valid on any bus in Greater Manchester and Tram Zone 1+2</span>
                         </li>
                         <li class="details-item">
                             <span class="custom-icon-lock">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M18 8h-1V6c0-2.8-2.2-5-5-5S7 3.2 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1v2z"/>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#4a5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                                 </svg>
                             </span>
                             <span>Ticket locked to this device</span>
@@ -426,8 +446,10 @@
 
                     <div class="view-details">
                         <div class="view-details-left">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#4a5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="16" x2="12" y2="12"/>
+                                <line x1="12" y1="8" x2="12.01" y2="8"/>
                             </svg>
                             <span>View details</span>
                         </div>
