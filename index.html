@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Your ticket</title>
-    <!-- مكتبة توليد الـ QR Code ليعمل بشكل ديناميكي -->
+    <!-- مكتبة توليد الـ QR Code ديناميكياً -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* التنسيقات الأساسية ومطابقة الألوان والخطوط */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -63,14 +62,9 @@
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
-        .btn-generate:hover {
-            background-color: #e08f2f;
-        }
-
-        /* حاوية الهاتف والتذكرة (الجزء الثاني) */
+        /* حاوية الهاتف والتذكرة */
         #part2 {
             display: none;
             width: 100%;
@@ -87,7 +81,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 18px 20px;
             border-bottom: 1px solid #f3f4f6;
             background: #fff;
         }
@@ -98,7 +92,7 @@
             color: #111;
             flex-grow: 1;
             text-align: center;
-            margin-left: 35px; /* لتوسيط الكلمة بسبب وجود كلمة Close في اليمين */
+            margin-left: 35px;
         }
 
         .header .close-btn {
@@ -108,28 +102,28 @@
             cursor: pointer;
         }
 
-        /* جسم التذكرة الداخلي */
+        /* جسم التذكرة */
         .ticket-body {
             padding: 16px;
-            background-color: #f8fafc;
+            background-color: #f4f6f8;
         }
 
         .ticket-card {
             background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            border: 1px solid #f0f2f5;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid #eef0f2;
             overflow: hidden;
         }
 
-        /* شريط التذكرة العلوي (Multi / Adult) */
+        /* شريط التذكرة العلوي (Multi / Adult) بأيقونات خطية */
         .ticket-info-bar {
-            background-color: #cde4e2; /* لون مائل للأزرق الفاتح كما بالصورة */
-            padding: 10px 16px;
+            background-color: #cee5e3;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             color: #2c3e50;
         }
@@ -137,7 +131,13 @@
         .info-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+        }
+
+        .info-icon {
+            width: 18px;
+            height: 18px;
+            fill: #2c3e50;
         }
 
         /* قسم الـ QR */
@@ -149,86 +149,69 @@
             background: #fff;
         }
 
-        #qrContainer img, #qrContainer canvas {
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* شريط العداد التنازلي الأخضر الفاتح */
+        /* شريط الصلاحية الأخضر الفاتح */
         .timer-bar {
             background-color: #eaf6ed;
             color: #1e7041;
             border-radius: 10px;
-            padding: 8px 16px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             margin: 0 20px 20px 20px;
         }
 
-        .timer-icon {
+        .timer-bar svg {
             width: 16px;
             height: 16px;
-            border: 2px solid #1e7041;
-            border-radius: 50%;
-            position: relative;
+            fill: #1e7041;
         }
 
-        .timer-icon::after {
-            content: '';
-            position: absolute;
-            width: 6px;
-            height: 2px;
-            background: #1e7041;
-            top: 50%;
-            left: 50%;
-            transform-origin: left center;
-            transform: translate(-50%, -50%) rotate(-45deg);
-        }
-
-        /* الفاصل الحركي (الخط مع شعار النحلة السداسي الأصلي والفتحات الدائرية) */
+        /* الفاصل الحركي الذكي مع قواطع داخلية هندسية (Notches) */
         .animation-divider {
             position: relative;
             height: 48px;
             background: #ffffff;
             display: flex;
             align-items: center;
-            overflow: visible; /* للسماح للفتحات الدائرية بالظهور بشكل صحيح */
         }
 
-        /* الخط الفاصل المار عبر التذكرة */
         .divider-line {
             width: 100%;
             height: 1px;
-            background: #e2e8f0;
+            background: #e5e7eb;
             position: absolute;
             top: 50%;
             left: 0;
             z-index: 1;
         }
 
-        /* الفتحات الدائرية المميزة على الأطراف */
+        /* قواطع جانبية غائرة مفرغة للداخل تماماً */
         .notch {
             position: absolute;
             width: 18px;
-            height: 18px;
-            background-color: #f8fafc; /* تطابق خلفية جسم التذكرة لتظهر كقطع */
-            border-radius: 50%;
+            height: 24px;
+            background-color: #f4f6f8; /* نفس لون خلفية الـ ticket-body لتبدو مفرغة */
+            z-index: 2;
             top: 50%;
             transform: translateY(-50%);
-            z-index: 2;
-            border: 1px solid #f0f2f5;
         }
 
         .notch-left {
-            left: -9px;
+            left: 0;
+            border-radius: 0 12px 12px 0;
+            border: 1px solid #eef0f2;
+            border-left: none;
         }
 
         .notch-right {
-            right: -9px;
+            right: 0;
+            border-radius: 12px 0 0 12px;
+            border: 1px solid #eef0f2;
+            border-right: none;
         }
 
         /* حاوية الشعار الأصلي المتحرك */
@@ -237,33 +220,26 @@
             top: 50%;
             transform: translateY(-50%);
             z-index: 3;
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: moveLeftRight 6s ease-in-out infinite alternate;
         }
 
-        /* ضبط حجم الشعار الأصلي ليكون متناسقاً تماماً */
         .official-bee-img {
             width: 100%;
             height: auto;
             object-fit: contain;
         }
 
-        /* حركة الذهاب والإياب من اليمين إلى اليسار والعكس فوق الخط */
         @keyframes moveLeftRight {
-            0% {
-                left: 12px;
-            }
-            100% {
-                /* حساب المسافة الإجمالية لتبقى النحلة داخل حدود الكارد بالكامل */
-                left: calc(100% - 54px);
-            }
+            0% { left: 24px; }
+            100% { left: calc(100% - 68px); }
         }
 
-        /* تفاصيل النص السفلي للتذكرة ومطابقتها التامة للصورة */
+        /* تفاصيل النص السفلي */
         .ticket-details {
             padding: 24px 20px;
             background: #fff;
@@ -273,7 +249,7 @@
             font-size: 21px;
             font-weight: 800;
             color: #1a1a1a;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             text-align: left;
         }
 
@@ -281,35 +257,58 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 24px;
         }
 
         .details-item {
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            align-items: center;
+            gap: 12px;
             color: #4a5568;
             font-size: 13.5px;
-            line-height: 1.4;
             font-weight: 500;
             text-align: left;
         }
 
-        .icon-check {
-            color: #4caf50;
-            font-weight: bold;
-            font-size: 15px;
-            min-width: 16px;
+        /* تصميم الأيقونات المخصصة */
+        .custom-icon-check {
+            width: 18px;
+            height: 18px;
+            background-color: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
-        .icon-lock {
-            color: #4a5568;
-            font-size: 15px;
-            min-width: 16px;
+        .custom-icon-check::after {
+            content: '';
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
         }
 
-        /* زر التفاصيل المنسدل في الأسفل */
+        .custom-icon-lock {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .custom-icon-lock svg {
+            width: 16px;
+            height: 16px;
+            fill: #4a5568;
+        }
+
+        /* زر التفاصيل المنسدل المطور */
         .view-details {
             border-top: 1px solid #edf2f7;
             padding-top: 16px;
@@ -317,14 +316,26 @@
             justify-content: space-between;
             align-items: center;
             color: #4a5568;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
         }
 
+        .view-details-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-details-left svg {
+            width: 16px;
+            height: 16px;
+            fill: #4a5568;
+        }
+
         .arrow-down {
             border: solid #4a5568;
-            border-width: 0 2px 2px 0;
+            border-width: 0 1.5px 1.5px 0;
             display: inline-block;
             padding: 3px;
             transform: rotate(45deg);
@@ -336,58 +347,57 @@
     <!-- الجزء الأول: واجهة الإدخال -->
     <div id="part1">
         <h2 style="margin-bottom: 20px; text-align: center;">إعداد التذكرة</h2>
-        
         <div class="input-group">
             <label for="qrText">أدخل نص أو رابط الـ QR Code:</label>
             <input type="text" id="qrText" value="https://example.com/ticket-verification-data">
         </div>
-
         <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
     </div>
 
-    <!-- الجزء الثاني: واجهة التذكرة المطابقة تماماً للصورة المعطاة -->
+    <!-- الجزء الثاني: التذكرة المطابقة تماماً للمواصفات الرسمية -->
     <div id="part2">
-        <!-- شريط الرأس للهاتف والتذكرة -->
         <div class="header">
             <div class="title">Your ticket</div>
             <span class="close-btn" onclick="goBackToSetup()">Close</span>
         </div>
 
-        <!-- جسم التذكرة -->
         <div class="ticket-body">
             <div class="ticket-card">
                 
-                <!-- شريط النوع والمسافر (Multi | Adult) -->
+                <!-- شريط معلومات التذكرة بأيقونات SVG رمادية خطية -->
                 <div class="ticket-info-bar">
                     <div class="info-item">
-                        <!-- أيقونة الحافلة والترام المبسطة -->
-                        <span style="font-size: 16px;">🚌🚇</span>
+                        <svg class="info-icon" viewBox="0 0 24 24">
+                            <path d="M4 16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-5c0-3.3-2.7-6-6-6V3c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v2c-3.3 0-6 2.7-6 6v5zm4 0v-5c0-2.2 1.8-4 4-4s4 1.8 4 4v5H8zM6 19v1c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-1H6z"/>
+                        </svg>
                         <span>Multi</span>
                     </div>
                     <div class="info-item">
-                        <!-- أيقونة الشخص المستخدِم -->
-                        <span style="font-size: 16px;">👤</span>
+                        <svg class="info-icon" viewBox="0 0 24 24">
+                            <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/>
+                        </svg>
                         <span>Adult</span>
                     </div>
                 </div>
 
-                <!-- حاوية توليد الـ QR Code -->
+                <!-- قسم الـ QR Code -->
                 <div class="qr-section">
                     <div id="qrContainer"></div>
                 </div>
 
-                <!-- شريط الوقت المتبقي وصلاحية التذكرة (أخضر خفيف) -->
+                <!-- شريط الوقت المتبقي وصلاحية التذكرة -->
                 <div class="timer-bar">
-                    <div class="timer-icon"></div>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                    </svg>
                     <div>Expires in <span id="countdown_timer">12 hrs 38 min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي (الخط مع النحلة السداسية والفتحات الدائرية) -->
+                <!-- الفاصل الحركي الهندسي الذكي مع قواطع جانبية داخلية -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
                     
-                    <!-- السداسي الحركي باستخدام الشعار الأصلي المسمى bee.png.png -->
                     <div class="bee-hexagon-container">
                         <img src="img/bee.png.png" alt="Bee Network" class="official-bee-img">
                     </div>
@@ -395,23 +405,32 @@
                     <div class="notch notch-right"></div>
                 </div>
 
-                <!-- تفاصيل التذكرة ومعلومات الصلاحية والمطابقة تماماً للصورة المعطاة -->
+                <!-- تفاصيل التذكرة ومعلومات الصلاحية الرسمية -->
                 <div class="ticket-details">
                     <h1 class="ticket-title">1 Day Bee AnyBus + Tram</h1>
                     
                     <ul class="details-list">
                         <li class="details-item">
-                            <span class="icon-check">✓</span>
+                            <span class="custom-icon-check"></span>
                             <span>Valid on any bus in Greater Manchester and Tram Zone 1+2</span>
                         </li>
                         <li class="details-item">
-                            <span class="icon-lock">🔒</span>
+                            <span class="custom-icon-lock">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M18 8h-1V6c0-2.8-2.2-5-5-5S7 3.2 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1v2z"/>
+                                </svg>
+                            </span>
                             <span>Ticket locked to this device</span>
                         </li>
                     </ul>
 
                     <div class="view-details">
-                        <span>View details</span>
+                        <div class="view-details-left">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                            </svg>
+                            <span>View details</span>
+                        </div>
                         <span class="arrow-down"></span>
                     </div>
                 </div>
@@ -420,9 +439,7 @@
         </div>
     </div>
 
-    <!-- المنطق البرمجي والتحكم التلقائي -->
     <script>
-        // إعداد التذكرة وتوليد الـ QR
         function setUpTicket() {
             const qrText = document.getElementById("qrText").value;
             const part1 = document.getElementById("part1");
@@ -433,11 +450,9 @@
             part1.style.display = "none";
             part2.style.display = "block";
 
-            // تشغيل العداد التلقائي لمنتصف الليل
             startCountdown();
         }
 
-        // توليد الـ QR Code ديناميكياً بحجم مطابق للصورة
         function generateQR(text) {
             const qrContainer = document.getElementById('qrContainer');
             qrContainer.innerHTML = '';
@@ -451,13 +466,11 @@
             });
         }
 
-        // العودة لصفحة الإعداد عند الضغط على Close
         function goBackToSetup() {
             document.getElementById("part1").style.display = "block";
             document.getElementById("part2").style.display = "none";
         }
 
-        // حساب الوقت التلقائي المتبقي لنهاية اليوم (الساعة 23:59:59) ومطابقته لتنسيق الصورة
         function startCountdown() {
             const countdownElement = document.getElementById('countdown_timer');
             
@@ -479,7 +492,7 @@
             }
 
             updateTimer();
-            setInterval(updateTimer, 60000); // تحديث التوقيت كل دقيقة لضمان ثبات وسلاسة الأداء
+            setInterval(updateTimer, 60000);
         }
     </script>
 </body>
