@@ -200,17 +200,16 @@
             border-radius: 1px;
         }
 
-        /* الفاصل الحركي مع الخط المستقيم */
+        /* الفاصل الحركي */
         .animation-divider {
             position: relative;
-            height: 64px;
+            height: 72px;
             background: #ffffff;
             display: flex;
             align-items: center;
             overflow: visible;
         }
 
-        /* الخط أصبح مستقيماً متصلاً */
         .divider-line {
             width: calc(100% - 24px);
             margin: 0 auto;
@@ -236,18 +235,18 @@
         .notch-left { left: -10px; }
         .notch-right { right: -10px; }
 
-        /* حاوية الشعار */
+        /* الشعار أصبحت قياساته أكبر (88px) وسرعة الحركة أسرع (2.2 ثانية) */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             z-index: 3;
-            width: 72px;
-            height: 72px;
+            width: 88px;
+            height: 88px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: moveLeftRight 3.5s ease-in-out infinite alternate;
+            animation: moveLeftRight 2.2s linear infinite alternate;
         }
 
         .official-bee-img {
@@ -257,8 +256,8 @@
         }
 
         @keyframes moveLeftRight {
-            0% { left: 14px; }
-            100% { left: calc(100% - 86px); }
+            0% { left: 10px; }
+            100% { left: calc(100% - 98px); }
         }
 
         /* تفاصيل النص السفلي */
@@ -312,7 +311,6 @@
             gap: 10px;
         }
 
-        /* أيقونة علامة التعجب بداخل دائرة بيضاء */
         .exclamation-icon {
             width: 20px;
             height: 20px;
@@ -383,7 +381,7 @@
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي مع الخط المستقيم الشفاف -->
+                <!-- الفاصل الحركي الشعار المكبر والمسرّع -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
@@ -410,7 +408,7 @@
                         </li>
                     </ul>
 
-                    <!-- View Details مع أيقونة الدائرة البيضاء وبداخلها علامة تعجب -->
+                    <!-- View Details -->
                     <div class="view-details">
                         <div class="view-details-left">
                             <div class="exclamation-icon">!</div>
@@ -464,10 +462,17 @@
             
             function updateTimer() {
                 const now = new Date();
-                const endOfDay = new Date();
-                endOfDay.setHours(23, 59, 59, 999);
+                let targetTime = new Date();
                 
-                const distance = endOfDay.getTime() - now.getTime();
+                // تحديد وقت الانتهاء دائماً الساعة 03:59:59 صباحاً
+                targetTime.setHours(3, 59, 59, 999);
+
+                // إذا كان الوقت الحالي بعد الساعة 03:59 صباحاً، سيتم الحساب حتى الساعة 03:59 صباحاً لليوم التالي
+                if (now.getTime() >= targetTime.getTime()) {
+                    targetTime.setDate(targetTime.getDate() + 1);
+                }
+
+                const distance = targetTime.getTime() - now.getTime();
 
                 if (distance > 0) {
                     const hours = Math.floor(distance / (1000 * 60 * 60));
@@ -481,7 +486,7 @@
 
             updateTimer();
             if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(updateTimer, 30000);
+            timerInterval = setInterval(updateTimer, 10000);
         }
     </script>
 </body>
