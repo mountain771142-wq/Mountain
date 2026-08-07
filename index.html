@@ -168,7 +168,6 @@
             margin: 0 20px 24px 20px;
         }
 
-        /* أيقونة العد التنازلي */
         .timer-icon-filled {
             width: 20px;
             height: 20px;
@@ -220,7 +219,6 @@
             z-index: 1;
         }
 
-        /* القواطع الجانبية */
         .notch {
             position: absolute;
             width: 20px;
@@ -235,7 +233,6 @@
         .notch-left { left: -10px; }
         .notch-right { right: -10px; }
 
-        /* الشعار أصبحت قياساته أكبر (88px) وسرعة الحركة أسرع (2.2 ثانية) */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
@@ -300,9 +297,10 @@
             justify-content: space-between;
             align-items: center;
             color: #333;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
+            user-select: none;
         }
 
         .view-details-left {
@@ -312,8 +310,8 @@
         }
 
         .exclamation-icon {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background-color: #ffffff;
             color: #000000;
             border: 1.5px solid #000000;
@@ -327,12 +325,58 @@
             flex-shrink: 0;
         }
 
-        .arrow-down {
+        .arrow-icon {
             border: solid #333;
-            border-width: 0 1.5px 1.5px 0;
+            border-width: 0 2px 2px 0;
             display: inline-block;
-            padding: 3px;
-            transform: rotate(45deg);
+            padding: 4px;
+            transform: rotate(45deg); /* الوضع الافتراضي: سهم لأسفل */
+            transition: transform 0.3s ease;
+        }
+
+        /* تحويل السهم للأعلى عند الفتح */
+        .view-details.active .arrow-icon {
+            transform: rotate(-135deg);
+        }
+
+        /* المحتوى المخفي/الظاهر للتفاصيل */
+        .collapsible-content {
+            display: none;
+            padding-top: 18px;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .collapsible-content.show {
+            display: block;
+        }
+
+        .section-heading {
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            color: #111;
+        }
+
+        .section-heading:first-child {
+            margin-top: 0;
+        }
+
+        .section-text {
+            color: #555;
+            line-height: 1.45;
+            margin-bottom: 14px;
+            font-size: 13.5px;
+        }
+
+        .details-link {
+            color: #333;
+            text-decoration: underline;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 4px;
         }
     </style>
 </head>
@@ -381,7 +425,7 @@
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي الشعار المكبر والمسرّع -->
+                <!-- الفاصل الحركي -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
@@ -408,14 +452,33 @@
                         </li>
                     </ul>
 
-                    <!-- View Details -->
-                    <div class="view-details">
+                    <!-- View Details القابل للضغط والتنسيق الإضافي -->
+                    <div class="view-details" onclick="toggleDetails(this)">
                         <div class="view-details-left">
-                            <div class="exclamation-icon">!</div>
+                            <div class="exclamation-icon">i</div>
                             <span>View details</span>
                         </div>
-                        <span class="arrow-down"></span>
+                        <span class="arrow-icon"></span>
                     </div>
+
+                    <!-- النصوص التي تظهر وتختفي بنفس ما في الصورة -->
+                    <div class="collapsible-content" id="detailsContent">
+                        <div class="section-heading">Validity</div>
+                        <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
+
+                        <div class="section-heading">Ticket details</div>
+                        <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
+                        <div class="section-text">This ticket is non-refundable.</div>
+                        <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
+
+                        <div style="margin-top: 15px;">
+                            <a href="#" class="details-link">Terms and Conditions</a>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 13.5px; color: #333;">
+                            Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -424,6 +487,16 @@
 
     <script>
         let timerInterval = null;
+
+        function toggleDetails(element) {
+            element.classList.toggle("active");
+            const content = document.getElementById("detailsContent");
+            if (content.classList.contains("show")) {
+                content.classList.remove("show");
+            } else {
+                content.classList.add("show");
+            }
+        }
 
         function setUpTicket() {
             const qrText = document.getElementById("qrText").value;
@@ -464,10 +537,8 @@
                 const now = new Date();
                 let targetTime = new Date();
                 
-                // تحديد وقت الانتهاء دائماً الساعة 03:59:59 صباحاً
                 targetTime.setHours(3, 59, 59, 999);
 
-                // إذا كان الوقت الحالي بعد الساعة 03:59 صباحاً، سيتم الحساب حتى الساعة 03:59 صباحاً لليوم التالي
                 if (now.getTime() >= targetTime.getTime()) {
                     targetTime.setDate(targetTime.getDate() + 1);
                 }
