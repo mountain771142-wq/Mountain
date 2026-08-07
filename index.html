@@ -199,7 +199,7 @@
             border-radius: 1px;
         }
 
-        /* الفاصل الحركي مع حركة الرفرفة */
+        /* الفاصل الحركي */
         .animation-divider {
             position: relative;
             height: 72px;
@@ -233,7 +233,6 @@
         .notch-left { left: -10px; }
         .notch-right { right: -10px; }
 
-        /* حركة النحلة يمين ويسار */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
@@ -247,28 +246,15 @@
             animation: moveLeftRight 2.2s linear infinite alternate;
         }
 
-        /* حركة رفرفة الأجنحة والنبض الخاصة بالنحلة */
         .official-bee-img {
             width: 100%;
             height: auto;
             object-fit: contain;
-            animation: wingFlap 0.18s ease-in-out infinite alternate;
         }
 
         @keyframes moveLeftRight {
             0% { left: 10px; }
             100% { left: calc(100% - 98px); }
-        }
-
-        @keyframes wingFlap {
-            0% {
-                transform: scale(0.95) rotate(-1.5deg);
-                opacity: 0.85;
-            }
-            100% {
-                transform: scale(1.04) rotate(1.5deg);
-                opacity: 1;
-            }
         }
 
         /* تفاصيل النص السفلي */
@@ -323,6 +309,7 @@
             gap: 10px;
         }
 
+        /* أيقونة المعلومات */
         .info-circle-icon {
             width: 22px;
             height: 22px;
@@ -440,7 +427,7 @@
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي مع النحلة المتحركة (حركة أفقية + رفرفة الأجنحة) -->
+                <!-- الفاصل الحركي -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
