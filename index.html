@@ -199,7 +199,7 @@
             border-radius: 1px;
         }
 
-        /* الفاصل الحركي */
+        /* الفاصل الحركي مع حركة الرفرفة */
         .animation-divider {
             position: relative;
             height: 72px;
@@ -233,6 +233,7 @@
         .notch-left { left: -10px; }
         .notch-right { right: -10px; }
 
+        /* حركة النحلة يمين ويسار */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
@@ -246,15 +247,28 @@
             animation: moveLeftRight 2.2s linear infinite alternate;
         }
 
+        /* حركة رفرفة الأجنحة والنبض الخاصة بالنحلة */
         .official-bee-img {
             width: 100%;
             height: auto;
             object-fit: contain;
+            animation: wingFlap 0.18s ease-in-out infinite alternate;
         }
 
         @keyframes moveLeftRight {
             0% { left: 10px; }
             100% { left: calc(100% - 98px); }
+        }
+
+        @keyframes wingFlap {
+            0% {
+                transform: scale(0.95) rotate(-1.5deg);
+                opacity: 0.85;
+            }
+            100% {
+                transform: scale(1.04) rotate(1.5deg);
+                opacity: 1;
+            }
         }
 
         /* تفاصيل النص السفلي */
@@ -289,14 +303,14 @@
             text-align: left;
         }
 
-        /* زر View Details المتطابق مع الصورة */
+        /* زر التفاصيل المنسدل */
         .view-details {
             border-top: 1px solid #eaeaea;
-            padding-top: 16px;
+            padding-top: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #222;
+            color: #333;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -309,15 +323,35 @@
             gap: 10px;
         }
 
-        /* أيقونة Chevron للسهم المنسدل */
-        .chevron-icon {
-            width: 20px;
-            height: 20px;
+        .info-circle-icon {
+            width: 22px;
+            height: 22px;
+            background-color: #ffffff;
+            color: #000000;
+            border: 1.5px solid #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: Georgia, serif;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .arrow-icon {
+            border: solid #333;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 4px;
+            transform: rotate(45deg);
             transition: transform 0.3s ease;
         }
 
-        .view-details.active .chevron-icon {
-            transform: rotate(180deg);
+        .view-details.active .arrow-icon {
+            transform: rotate(-135deg);
         }
 
         /* المحتوى المخفي/الظاهر للتفاصيل */
@@ -406,7 +440,7 @@
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي -->
+                <!-- الفاصل الحركي مع النحلة المتحركة (حركة أفقية + رفرفة الأجنحة) -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
@@ -433,21 +467,13 @@
                         </li>
                     </ul>
 
-                    <!-- View Details المطابق للصورة الأصلية تماماً -->
+                    <!-- View Details مع أيقونة المعلومات (i) -->
                     <div class="view-details" onclick="toggleDetails(this)">
                         <div class="view-details-left">
-                            <!-- أيقونة المعلومة i المماثلة للصورة -->
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
+                            <div class="info-circle-icon">i</div>
                             <span>View details</span>
                         </div>
-                        <!-- أيقونة السهم المائل Chevron -->
-                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
+                        <span class="arrow-icon"></span>
                     </div>
 
                     <!-- النصوص المنسدلة للتفاصيل -->
