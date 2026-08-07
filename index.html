@@ -289,14 +289,14 @@
             text-align: left;
         }
 
-        /* زر التفاصيل المنسدل */
+        /* زر View Details المتطابق مع الصورة */
         .view-details {
             border-top: 1px solid #eaeaea;
-            padding-top: 15px;
+            padding-top: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #333;
+            color: #222;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -309,34 +309,15 @@
             gap: 10px;
         }
 
-        .exclamation-icon {
-            width: 22px;
-            height: 22px;
-            background-color: #ffffff;
-            color: #000000;
-            border: 1.5px solid #000000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 800;
-            font-family: Arial, sans-serif;
-            flex-shrink: 0;
-        }
-
-        .arrow-icon {
-            border: solid #333;
-            border-width: 0 2px 2px 0;
-            display: inline-block;
-            padding: 4px;
-            transform: rotate(45deg); /* الوضع الافتراضي: سهم لأسفل */
+        /* أيقونة Chevron للسهم المنسدل */
+        .chevron-icon {
+            width: 20px;
+            height: 20px;
             transition: transform 0.3s ease;
         }
 
-        /* تحويل السهم للأعلى عند الفتح */
-        .view-details.active .arrow-icon {
-            transform: rotate(-135deg);
+        .view-details.active .chevron-icon {
+            transform: rotate(180deg);
         }
 
         /* المحتوى المخفي/الظاهر للتفاصيل */
@@ -452,16 +433,24 @@
                         </li>
                     </ul>
 
-                    <!-- View Details القابل للضغط والتنسيق الإضافي -->
+                    <!-- View Details المطابق للصورة الأصلية تماماً -->
                     <div class="view-details" onclick="toggleDetails(this)">
                         <div class="view-details-left">
-                            <div class="exclamation-icon">i</div>
+                            <!-- أيقونة المعلومة i المماثلة للصورة -->
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
                             <span>View details</span>
                         </div>
-                        <span class="arrow-icon"></span>
+                        <!-- أيقونة السهم المائل Chevron -->
+                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </div>
 
-                    <!-- النصوص التي تظهر وتختفي بنفس ما في الصورة -->
+                    <!-- النصوص المنسدلة للتفاصيل -->
                     <div class="collapsible-content" id="detailsContent">
                         <div class="section-heading">Validity</div>
                         <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
