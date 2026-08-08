@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Your ticket</title>
-    <!-- مكتبة توليد الـ QR Code ديناميكياً -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
@@ -31,7 +30,7 @@
             padding: 25px;
             border-radius: 20px;
             width: 100%;
-            max-width: 360px; /* تم تصغير العرض لتناسب الهواتف الرأسية */
+            max-width: 360px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
@@ -71,7 +70,7 @@
         #part2 {
             display: none;
             width: 100%;
-            max-width: 360px; /* تم تقليل العرض لتصبح التذكرة أنحف وأطول */
+            max-width: 360px;
             background: #ffffff;
             border-radius: 32px;
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
@@ -139,9 +138,9 @@
             gap: 8px;
         }
 
-        /* قسم الـ QR - تم زيادة المسافات لتوسيط الباركود مع مسافة أكبر فوق وتحت */
+        /* قسم الـ QR - زيادة المسافات العلوية والسفلية بشكل ممتاز */
         .qr-section {
-            padding: 38px 20px 32px 20px; /* زيادة المسافة أعلى وأسفل الباركود */
+            padding: 58px 20px 48px 20px; /* زيادة التباعد فوق وتحت الباركود */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -171,7 +170,7 @@
             gap: 10px;
             font-size: 14px;
             font-weight: 700;
-            margin: 0 16px 24px 16px;
+            margin: 0 16px 28px 16px; /* زيادة الهامش السفلي قبل النحلة */
         }
 
         .timer-icon-filled {
@@ -390,7 +389,6 @@
 </head>
 <body>
 
-    <!-- الجزء الأول: واجهة الإدخال -->
     <div id="part1">
         <h2 style="margin-bottom: 20px; text-align: center;">إعداد التذكرة</h2>
         <div class="input-group">
@@ -400,7 +398,6 @@
         <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
     </div>
 
-    <!-- الجزء الثاني: التذكرة -->
     <div id="part2">
         <div class="header">
             <div class="title">Your ticket</div>
@@ -410,7 +407,6 @@
         <div class="ticket-body">
             <div class="ticket-card">
                 
-                <!-- شريط معلومات التذكرة العلوي الداكن -->
                 <div class="ticket-info-bar">
                     <div class="info-item">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffcc00"><path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/></svg>
@@ -422,18 +418,15 @@
                     </div>
                 </div>
 
-                <!-- قسم الـ QR Code -->
                 <div class="qr-section">
                     <div id="qrContainer"></div>
                 </div>
 
-                <!-- شريط الوقت المتبقي -->
                 <div class="timer-bar">
                     <div class="timer-icon-filled"></div>
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
@@ -445,7 +438,6 @@
                     <div class="notch notch-right"></div>
                 </div>
 
-                <!-- تفاصيل النص السفلي -->
                 <div class="ticket-details">
                     <h1 class="ticket-title">1-day Bee Bus</h1>
                     
@@ -460,7 +452,6 @@
                         </li>
                     </ul>
 
-                    <!-- View Details مع أيقونة المعلومات (i) -->
                     <div class="view-details" onclick="toggleDetails(this)">
                         <div class="view-details-left">
                             <div class="info-circle-icon">i</div>
@@ -469,7 +460,6 @@
                         <span class="arrow-icon"></span>
                     </div>
 
-                    <!-- النصوص المنسدلة للتفاصيل -->
                     <div class="collapsible-content" id="detailsContent">
                         <div class="section-heading">Validity</div>
                         <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
@@ -524,7 +514,7 @@
             qrContainer.innerHTML = '';
             new QRCode(qrContainer, {
                 text: text,
-                width: 140,  /* حجم مناسب ومتناسق مع العرض الجديد */
+                width: 140,
                 height: 140,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
