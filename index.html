@@ -138,7 +138,7 @@
             gap: 8px;
         }
 
-        /* قسم الـ QR - تقليل المسافة بشكل بسيط جداً للتطابق */
+        /* قسم الـ QR */
         .qr-section {
             padding: 42px 20px 36px 20px;
             display: flex;
@@ -215,19 +215,20 @@
         }
 
         .divider-line {
-            width: calc(100% - 24px);
+            width: calc(100% - 30px);
             margin: 0 auto;
             border-bottom: 2px solid #cccccc;
             position: absolute;
             top: 50%;
-            left: 12px;
+            left: 15px;
             z-index: 1;
         }
 
+        /* الخرمات/الفتحات الجانبية بعد التوسيع البسيط */
         .notch {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 26px; /* تم زيادة الحجم من 20px إلى 26px */
+            height: 26px;
             background-color: #ededf0;
             border-radius: 50%;
             z-index: 4;
@@ -235,8 +236,8 @@
             transform: translateY(-50%);
         }
 
-        .notch-left { left: -10px; }
-        .notch-right { right: -10px; }
+        .notch-left { left: -13px; } /* تعديل الإزاحة لتتناسب مع الحجم الجديد */
+        .notch-right { right: -13px; }
 
         .bee-hexagon-container {
             position: absolute;
