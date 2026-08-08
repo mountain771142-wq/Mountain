@@ -159,19 +159,19 @@
             margin: 0 auto;
         }
 
-        /* شريط الوقت الأخضر */
+        /* شريط الوقت الأخضر (تم توسيعه وزيادة عرضه) */
         .timer-bar {
             background-color: #cce8d5;
             color: #1c5e32;
-            border-radius: 10px;
-            padding: 12px 16px;
+            border-radius: 12px;
+            padding: 14px 20px; /* زيادة التعبئة الداخلية */
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-size: 14px;
+            gap: 12px;
+            font-size: 15px; /* تكبير الخط قليلاً ليتناسب مع العرض */
             font-weight: 700;
-            margin: 0 16px 24px 16px;
+            margin: 0 10px 24px 10px; /* تقليل الهوامش الجانبية ليصبح الشريط أكثر عرضاً */
         }
 
         .timer-icon-filled {
@@ -242,7 +242,7 @@
         .notch-left { left: -15px; }
         .notch-right { right: -15px; }
 
-        /* حاوية النحلة: تم تسريع الحركة إلى 1.2s لتصبح أكثر سلاسة وحيوية */
+        /* حاوية النحلة */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
@@ -432,7 +432,7 @@
                     <div id="qrContainer"></div>
                 </div>
 
-                <!-- شريط الوقت المتبقي -->
+                <!-- شريط الوقت المتبقي العريض -->
                 <div class="timer-bar">
                     <div class="timer-icon-filled"></div>
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
