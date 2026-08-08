@@ -215,20 +215,20 @@
         }
 
         .divider-line {
-            width: calc(100% - 30px);
+            width: calc(100% - 36px);
             margin: 0 auto;
             border-bottom: 2px solid #cccccc;
             position: absolute;
             top: 50%;
-            left: 15px;
+            left: 18px;
             z-index: 1;
         }
 
-        /* الخرمات/الفتحات الجانبية بعد التوسيع البسيط */
+        /* الخرمات/الفتحات الجانبية بحجم 30px */
         .notch {
             position: absolute;
-            width: 26px; /* تم زيادة الحجم من 20px إلى 26px */
-            height: 26px;
+            width: 30px; /* تم الضبط إلى 30px */
+            height: 30px;
             background-color: #ededf0;
             border-radius: 50%;
             z-index: 4;
@@ -236,8 +236,8 @@
             transform: translateY(-50%);
         }
 
-        .notch-left { left: -13px; } /* تعديل الإزاحة لتتناسب مع الحجم الجديد */
-        .notch-right { right: -13px; }
+        .notch-left { left: -15px; } /* منتصف النصف دائرة تماماً */
+        .notch-right { right: -15px; }
 
         .bee-hexagon-container {
             position: absolute;
