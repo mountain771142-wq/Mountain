@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Your ticket</title>
-    <!-- مكتبة توليد الـ QR Code ديناميكياً -->
+    <title>Bee Network Ticket App</title>
+    <!-- مكتبة توليد الـ QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
@@ -24,7 +24,7 @@
             padding: 10px;
         }
 
-        /* 1. شاشة الإعداد الأولى */
+        /* ------------------ 1. شاشة الإعداد الأولى ------------------ */
         #part1 {
             background: #222222;
             color: white;
@@ -67,9 +67,8 @@
             cursor: pointer;
         }
 
-        /* 2. حاوية الهاتف والتذكرة */
-        #part2 {
-            display: none;
+        /* ------------------ 2. حاوية الهاتف والتطبيقات ------------------ */
+        .app-container {
             width: 100%;
             max-width: 360px;
             background: #ffffff;
@@ -77,9 +76,180 @@
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
             overflow: hidden;
             border: 1px solid #e5e7eb;
+            display: none;
+            position: relative;
+            min-height: 640px;
         }
 
-        /* الهيدر العلوي */
+        /* ------------------ 3. شاشة قائمة التذاكر (My Tickets) ------------------ */
+        #ticketsListScreen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: #f8f9fa;
+        }
+
+        /* التبويب العلوي */
+        .top-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #eaeaea;
+            padding-top: 10px;
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #555;
+            position: relative;
+        }
+
+        .tab-item.active {
+            color: #000;
+            font-weight: 800;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #f5ca38;
+        }
+
+        /* أزرار Current / Expired */
+        .status-toggle {
+            display: flex;
+            padding: 16px;
+            gap: 12px;
+            background: #f8f9fa;
+        }
+
+        .status-btn {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .status-btn.active {
+            background-color: #2f3742;
+            color: #fff;
+        }
+
+        .status-btn.inactive {
+            background-color: transparent;
+            color: #666;
+        }
+
+        /* بطاقة التذكرة القابلة للنقر */
+        .tickets-content {
+            padding: 0 16px;
+            flex-grow: 1;
+        }
+
+        .list-ticket-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+        }
+
+        .card-top-bar {
+            background-color: #2f3742;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f5ca38;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .card-info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-middle-content {
+            padding: 16px;
+        }
+
+        .card-main-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .card-sub-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .card-timer-box {
+            background-color: #eaf6ed;
+            color: #1c5e32;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* الشريط السفلي للملاحة (Bottom Nav Bar) */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 10px 0 15px 0;
+            margin-top: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            font-size: 11px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #000;
+            font-weight: 700;
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        /* ------------------ 4. شاشة عرض التذكرة التفصيلية ------------------ */
+        #singleTicketScreen {
+            display: none;
+            background: #ffffff;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -106,7 +276,6 @@
             cursor: pointer;
         }
 
-        /* جسم التذكرة الملون */
         .ticket-body {
             padding: 16px;
             background-color: #ededf0;
@@ -121,26 +290,18 @@
             position: relative;
         }
 
-        /* شريط التذكرة العلوي المطابق للصورة الحقيقية الواضحة */
         .ticket-info-bar {
-            background-color: #2f3742; /* درجة اللون الحقيقية */
+            background-color: #2f3742;
             padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 16px;
             font-weight: 500;
-            color: #f5ca38; /* درجة الأصفر المطابقة */
-            border-radius: 12px 12px 0 0; /* انحناءة الزوايا الحقيقية */
+            color: #f5ca38;
+            border-radius: 12px 12px 0 0;
         }
 
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* قسم الـ QR */
         .qr-section {
             padding: 42px 20px 36px 20px;
             display: flex;
@@ -149,18 +310,11 @@
             background: #fff;
         }
 
-        #qrContainer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
         #qrContainer img {
             display: block;
             margin: 0 auto;
         }
 
-        /* شريط الوقت الأخضر العريض */
         .timer-bar {
             background-color: #cce8d5;
             color: #1c5e32;
@@ -206,7 +360,6 @@
             border-radius: 1px;
         }
 
-        /* الفاصل الحركي */
         .animation-divider {
             position: relative;
             height: 72px;
@@ -228,7 +381,6 @@
             z-index: 1;
         }
 
-        /* الخرمات/الفتحات الجانبية */
         .notch {
             position: absolute;
             width: 30px;
@@ -243,7 +395,6 @@
         .notch-left { left: -15px; }
         .notch-right { right: -15px; }
 
-        /* حاوية النحلة */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
@@ -269,7 +420,6 @@
             100% { left: calc(100% - 98px); }
         }
 
-        /* تفاصيل النص السفلي */
         .ticket-details {
             padding: 20px 16px;
             background: #fff;
@@ -301,7 +451,6 @@
             text-align: left;
         }
 
-        /* زر التفاصيل المنسدل */
         .view-details {
             border-top: 1px solid #eaeaea;
             padding-top: 15px;
@@ -321,7 +470,6 @@
             gap: 10px;
         }
 
-        /* أيقونة المعلومات */
         .info-circle-icon {
             width: 22px;
             height: 22px;
@@ -353,7 +501,6 @@
             transform: rotate(-135deg);
         }
 
-        /* المحتوى المخفي/الظاهر للتفاصيل */
         .collapsible-content {
             display: none;
             padding-top: 18px;
@@ -374,9 +521,7 @@
             color: #111;
         }
 
-        .section-heading:first-child {
-            margin-top: 0;
-        }
+        .section-heading:first-child { margin-top: 0; }
 
         .section-text {
             color: #555;
@@ -396,7 +541,7 @@
 </head>
 <body>
 
-    <!-- الجزء الأول: واجهة الإدخال -->
+    <!-- 1. شاشة الإعداد الأولى -->
     <div id="part1">
         <h2 style="margin-bottom: 20px; text-align: center;">إعداد التذكرة</h2>
         <div class="input-group">
@@ -406,103 +551,156 @@
         <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
     </div>
 
-    <!-- الجزء الثاني: التذكرة -->
-    <div id="part2">
-        <div class="header">
-            <div class="title">Your ticket</div>
-            <span class="close-btn" onclick="goBackToSetup()">Close</span>
-        </div>
+    <!-- 2. حاوية التطبيق -->
+    <div id="appContainer" class="app-container">
 
-        <div class="ticket-body">
-            <div class="ticket-card">
-                
-                <!-- شريط معلومات التذكرة العلوي الداكن الحقيقي -->
-                <div class="ticket-info-bar">
-                    <div class="info-item">
-                        <!-- أيقونة باص الطابقين الرسمية الدقيقة من الصورة الواضحة -->
-                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
-                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
-                        </svg>
-                        <span>Bus</span>
-                    </div>
-                    <div class="info-item">
-                        <!-- أيقونة الشخص (Adult) -->
-                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
-                        <span>Adult</span>
-                    </div>
-                </div>
+        <!-- أ. شاشة قائمة التذاكر (My tickets) -->
+        <div id="ticketsListScreen">
+            <div class="top-tabs">
+                <div class="tab-item">Buy tickets</div>
+                <div class="tab-item active">My tickets</div>
+            </div>
 
-                <!-- قسم الـ QR Code -->
-                <div class="qr-section">
-                    <div id="qrContainer"></div>
-                </div>
+            <div class="status-toggle">
+                <button class="status-btn active">Current</button>
+                <button class="status-btn inactive">Expired</button>
+            </div>
 
-                <!-- شريط الوقت المتبقي -->
-                <div class="timer-bar">
-                    <div class="timer-icon-filled"></div>
-                    <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
-                </div>
-
-                <!-- الفاصل الحركي -->
-                <div class="animation-divider">
-                    <div class="notch notch-left"></div>
-                    <div class="divider-line"></div>
-                    
-                    <div class="bee-hexagon-container">
-                        <img src="img/bee.png.png" alt="Bee Network" class="official-bee-img">
-                    </div>
-
-                    <div class="notch notch-right"></div>
-                </div>
-
-                <!-- تفاصيل النص السفلي -->
-                <div class="ticket-details">
-                    <h1 class="ticket-title">1-day Bee Bus</h1>
-                    
-                    <ul class="details-list">
-                        <li class="details-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                            <span>Bee Network</span>
-                        </li>
-                        <li class="details-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                            <span>Ticket locked to this device</span>
-                        </li>
-                    </ul>
-
-                    <!-- View Details مع أيقونة المعلومات (i) -->
-                    <div class="view-details" onclick="toggleDetails(this)">
-                        <div class="view-details-left">
-                            <div class="info-circle-icon">i</div>
-                            <span>View details</span>
+            <div class="tickets-content">
+                <!-- بطاقة التذكرة الحالية -->
+                <div class="list-ticket-card" onclick="openSingleTicket()">
+                    <div class="card-top-bar">
+                        <div class="card-info-item">
+                            <!-- أيقونة الباص -->
+                            <svg width="14" height="18" viewBox="0 0 16 20" fill="#f5ca38">
+                                <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                            </svg>
+                            <span>Bus</span>
                         </div>
-                        <span class="arrow-icon"></span>
-                    </div>
-
-                    <!-- النصوص المنسدلة للتفاصيل -->
-                    <div class="collapsible-content" id="detailsContent">
-                        <div class="section-heading">Validity</div>
-                        <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
-
-                        <div class="section-heading">Ticket details</div>
-                        <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
-                        <div class="section-text">This ticket is non-refundable.</div>
-                        <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
-
-                        <div style="margin-top: 15px;">
-                            <a href="#" class="details-link">Terms and Conditions</a>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 13.5px; color: #333;">
-                            Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a>
+                        <div class="card-info-item">
+                            <!-- أيقونة الشخص -->
+                            <svg width="15" height="17" viewBox="0 0 24 24" fill="#f5ca38">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            <span>Adult</span>
                         </div>
                     </div>
 
-                </div>
+                    <div class="card-middle-content">
+                        <div class="card-main-title">1-day Bee Bus</div>
+                        <div class="card-sub-title">Bee Network Bus</div>
 
+                        <div class="card-timer-box">
+                            <div class="timer-icon-filled"></div>
+                            <div>Expires in <span class="list_countdown_timer">-- hrs -- min.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريط السفلي Nav Bar -->
+            <div class="bottom-nav">
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9 C3.15 4.97 3 5.15 3 5.38v14.07c0 .32.29.57.61.52l5.39-1.87 6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.75c0-.32-.29-.57-.61-.52zM15 18.85l-6-2.11V5.15l6 2.11v11.59z"/></svg>
+                    <span>Explore</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <span>Plan</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <span>Favourites</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <svg viewBox="0 0 24 24"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2-1.46c-1.19.69-2 1.98-2 3.46s.81 2.77 2 3.46V18H4v-2.54c1.19-.69 2-1.98 2-3.46 0-1.48-.8-2.77-1.99-3.46L4 6h16v2.54z"/></svg>
+                    <span>Tickets</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <span>Account</span>
+                </a>
             </div>
         </div>
+
+        <!-- ب. شاشة التذكرة الكاملة (Single Ticket) -->
+        <div id="singleTicketScreen">
+            <div class="header">
+                <div class="title">Your ticket</div>
+                <span class="close-btn" onclick="showTicketsList()">Close</span>
+            </div>
+
+            <div class="ticket-body">
+                <div class="ticket-card">
+                    <div class="ticket-info-bar">
+                        <div class="card-info-item">
+                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
+                                <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                            </svg>
+                            <span>Bus</span>
+                        </div>
+                        <div class="card-info-item">
+                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            <span>Adult</span>
+                        </div>
+                    </div>
+
+                    <div class="qr-section">
+                        <div id="qrContainer"></div>
+                    </div>
+
+                    <div class="timer-bar">
+                        <div class="timer-icon-filled"></div>
+                        <div>Expires in <span class="single_countdown_timer">-- hrs -- min.</span></div>
+                    </div>
+
+                    <div class="animation-divider">
+                        <div class="notch notch-left"></div>
+                        <div class="divider-line"></div>
+                        <div class="bee-hexagon-container">
+                            <img src="img/bee.png.png" alt="Bee Network" class="official-bee-img">
+                        </div>
+                        <div class="notch notch-right"></div>
+                    </div>
+
+                    <div class="ticket-details">
+                        <h1 class="ticket-title">1-day Bee Bus</h1>
+                        <ul class="details-list">
+                            <li class="details-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <span>Bee Network</span>
+                            </li>
+                            <li class="details-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                <span>Ticket locked to this device</span>
+                            </li>
+                        </ul>
+
+                        <div class="view-details" onclick="toggleDetails(this)">
+                            <div class="view-details-left">
+                                <div class="info-circle-icon">i</div>
+                                <span>View details</span>
+                            </div>
+                            <span class="arrow-icon"></span>
+                        </div>
+
+                        <div class="collapsible-content" id="detailsContent">
+                            <div class="section-heading">Validity</div>
+                            <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
+                            <div class="section-heading">Ticket details</div>
+                            <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
+                            <div class="section-text">This ticket is non-refundable.</div>
+                            <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
+                            <div style="margin-top: 15px;"><a href="#" class="details-link">Terms and Conditions</a></div>
+                            <div style="margin-top: 10px; font-size: 13.5px; color: #333;">Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -511,23 +709,18 @@
         function toggleDetails(element) {
             element.classList.toggle("active");
             const content = document.getElementById("detailsContent");
-            if (content.classList.contains("show")) {
-                content.classList.remove("show");
-            } else {
-                content.classList.add("show");
-            }
+            content.classList.toggle("show");
         }
 
         function setUpTicket() {
             const qrText = document.getElementById("qrText").value;
-            const part1 = document.getElementById("part1");
-            const part2 = document.getElementById("part2");
-
             generateQR(qrText);
 
-            part1.style.display = "none";
-            part2.style.display = "block";
-
+            document.getElementById("part1").style.display = "none";
+            document.getElementById("appContainer").style.display = "block";
+            
+            // بداية فتح شاشة التذكرة مباشرة عند التفعيل
+            openSingleTicket();
             startCountdown();
         }
 
@@ -544,19 +737,24 @@
             });
         }
 
-        function goBackToSetup() {
-            document.getElementById("part1").style.display = "block";
-            document.getElementById("part2").style.display = "none";
-            if (timerInterval) clearInterval(timerInterval);
+        function showTicketsList() {
+            document.getElementById("singleTicketScreen").style.display = "none";
+            document.getElementById("ticketsListScreen").style.display = "flex";
+        }
+
+        function openSingleTicket() {
+            document.getElementById("ticketsListScreen").style.display = "none";
+            document.getElementById("singleTicketScreen").style.display = "block";
         }
 
         function startCountdown() {
-            const countdownElement = document.getElementById('countdown_timer');
+            const listTimers = document.querySelectorAll('.list_countdown_timer, .single_countdown_timer');
             
             function updateTimer() {
                 const now = new Date();
                 let targetTime = new Date();
                 
+                // تكتمل التذكرة عند الساعة 3:59 صباحاً اليوم التالي
                 targetTime.setHours(3, 59, 59, 999);
 
                 if (now.getTime() >= targetTime.getTime()) {
@@ -568,10 +766,11 @@
                 if (distance > 0) {
                     const hours = Math.floor(distance / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    
-                    countdownElement.textContent = `${hours} hrs ${minutes} min.`;
+                    const formattedTime = `${hours} hrs ${minutes} min.`;
+
+                    listTimers.forEach(el => el.textContent = formattedTime);
                 } else {
-                    countdownElement.textContent = "EXPIRED";
+                    listTimers.forEach(el => el.textContent = "EXPIRED");
                 }
             }
 
