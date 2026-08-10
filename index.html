@@ -389,9 +389,7 @@
             margin-top: 4px;
         }
 
-        /* ------------------------------------------------------------- */
-        /* 3. الشاشة الثالثة المطابقة تماماً للصورة المرفقة (My tickets) */
-        /* ------------------------------------------------------------- */
+        /* 3. الشاشة الثالثة (My tickets) */
         #part3 {
             display: none;
             width: 100%;
@@ -400,12 +398,10 @@
             background: #f7f7f8;
             position: relative;
             box-shadow: 0 0 20px rgba(0,0,0,0.08);
-            display: none;
             flex-direction: column;
             margin: 0 auto;
         }
 
-        /* التبويبات العلوية الرئيسية */
         .top-main-tabs {
             display: flex;
             background: #fff;
@@ -437,7 +433,6 @@
             background-color: #f5ca38;
         }
 
-        /* التبويبات الفرعية (Current / Expired) */
         .sub-tabs-container {
             display: flex;
             justify-content: center;
@@ -468,11 +463,10 @@
             color: #777777;
         }
 
-        /* منطقة كارت التذكرة المصغر */
         .tickets-list-area {
             padding: 20px 16px;
             flex-grow: 1;
-            padding-bottom: 90px; /* مسافة أمان لرفع الكارت عن شريط الملاحة */
+            padding-bottom: 90px;
         }
 
         .mini-ticket-card {
@@ -489,7 +483,6 @@
             transform: scale(0.98);
         }
 
-        /* الشريط الداكن للكارت المصغر */
         .mini-card-header {
             background-color: #2f3742;
             padding: 12px 18px;
@@ -501,7 +494,8 @@
             font-weight: 600;
         }
 
-        .mini-card-body {
+        /* الجزء العلوي لنص التذكرة داخل الكارت المصغر */
+        .mini-card-info-section {
             padding: 18px;
             background: #fff;
         }
@@ -517,10 +511,15 @@
             font-size: 14px;
             color: #666;
             font-weight: 500;
-            margin-bottom: 16px;
         }
 
-        /* شريط التوقيت الأخضر المصغر */
+        /* الجزء السفلي المصل بخط رمادي دقيق للعد التنازلي */
+        .mini-card-timer-section {
+            padding: 14px 18px;
+            background: #fff;
+            border-top: 1px solid #eceeed; /* الخط الأققي الدقيق الفاصل */
+        }
+
         .mini-timer-box {
             background-color: #eaf6ed;
             color: #1c5e32;
@@ -562,7 +561,6 @@
             background-color: #eaf6ed;
         }
 
-        /* شريط الملاحة السفلي (Bottom Navigation Bar) مرفوع ومناسب لمتصفح الهاتف */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -574,7 +572,7 @@
             border-top: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 16px 0; /* مرفوع لحماية الأزرار من شريط البحث في المتصفح */
+            padding: 8px 0 16px 0;
             z-index: 100;
         }
 
@@ -720,21 +718,18 @@
         </div>
     </div>
 
-    <!-- الجزء الثالث: الشاشة التي تظهر بعد الضغط على Close (مطابقة للصورة تماماً) -->
+    <!-- الجزء الثالث: الشاشة المطابقة تماماً للصورة (My tickets) -->
     <div id="part3">
-        <!-- التبويبات العلوية -->
         <div class="top-main-tabs">
             <div class="top-tab">Buy tickets</div>
             <div class="top-tab active">My tickets</div>
         </div>
 
-        <!-- التبويبات الفرعية -->
         <div class="sub-tabs-container">
             <button class="sub-tab-btn active">Current</button>
             <button class="sub-tab-btn inactive">Expired</button>
         </div>
 
-        <!-- كارت التذكرة المصغر المطابق للصورة -->
         <div class="tickets-list-area">
             <div class="mini-ticket-card" onclick="reopenTicket()">
                 <div class="mini-card-header">
@@ -751,9 +746,15 @@
                         <span>Adult</span>
                     </div>
                 </div>
-                <div class="mini-card-body">
+
+                <!-- عنوان التذكرة -->
+                <div class="mini-card-info-section">
                     <div class="mini-card-title">1-day Bee Bus</div>
                     <div class="mini-card-subtitle">Bee Network Bus</div>
+                </div>
+
+                <!-- شريط العد التنازلي مع وجود الخط الفاصل فوقه بالضبط -->
+                <div class="mini-card-timer-section">
                     <div class="mini-timer-box">
                         <div class="mini-timer-icon"></div>
                         <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
@@ -762,7 +763,6 @@
             </div>
         </div>
 
-        <!-- شريط الأزرار السفلي (Bottom Navigation Bar) -->
         <div class="bottom-nav">
             <div class="nav-item">
                 <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
@@ -829,13 +829,11 @@
             });
         }
 
-        /* عند النقر على Close الانتقال لشاشة التذاكر (My tickets) */
         function handleCloseTicket() {
             document.getElementById("part2").style.display = "none";
             document.getElementById("part3").style.display = "flex";
         }
 
-        /* عند الضغط على الكارت المصغر إعادة فتح التذكرة */
         function reopenTicket() {
             document.getElementById("part3").style.display = "none";
             document.getElementById("part2").style.display = "block";
