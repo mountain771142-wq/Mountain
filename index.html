@@ -492,30 +492,34 @@
             font-weight: 500;
         }
 
+        /* -------------------------------------------------------------
+           تنسيق قائمة Current المتطابق مع الصورة 100%
+        ------------------------------------------------------------- */
         .mini-card-timer-section {
-            padding: 14px 18px;
+            padding: 14px 16px;
             background: #fff;
-            border-top: 1px solid #eceeed;
+            border-top: 1px solid #f0f0f0;
         }
 
-        .mini-timer-box {
+        .mini-timer-box-current {
             background-color: #eaf6ed;
-            color: #1c5e32;
+            color: #1a532a;
             border-radius: 10px;
-            padding: 12px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             font-size: 15px;
             font-weight: 700;
         }
 
-        .mini-timer-icon {
-            width: 20px;
-            height: 20px;
-            background-color: #1c5e32;
-            border-radius: 50%;
-            position: relative;
+        .mini-timer-icon-svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: #236836;
+            stroke-width: 2.2;
             flex-shrink: 0;
         }
 
@@ -570,7 +574,7 @@
         }
 
         /* -------------------------------------------------------------
-           التنسيقات الدقيقة الخاصة بـ Expired المطابقة للصورة 100%
+           التنسيقات الخاصة بـ Expired
         ------------------------------------------------------------- */
         .expired-card-footer {
             padding: 14px 18px;
@@ -669,7 +673,7 @@
         <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
     </div>
 
-    <!-- الجزء الثاني: التذكرة (عرض كامل) -->
+    <!-- الجزء الثاني: التذكرة المفعلة (عرض كامل) -->
     <div id="part2">
         <div class="header">
             <div class="title">Your ticket</div>
@@ -682,7 +686,7 @@
                 <div class="ticket-info-bar">
                     <div class="info-item">
                         <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
-                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
                         </svg>
                         <span>Bus</span>
                     </div>
@@ -749,7 +753,7 @@
         </div>
     </div>
 
-    <!-- الجزء الثالث: شاشة My tickets المطابقة للتصميم الجديد -->
+    <!-- الجزء الثالث: شاشة My tickets (Current مفعّلة افتراضياً) -->
     <div id="part3">
         <div class="top-main-tabs">
             <div class="top-tab">Buy tickets</div>
@@ -757,17 +761,17 @@
         </div>
 
         <div class="sub-tabs-container">
-            <button id="btnCurrent" class="sub-tab-btn inactive" onclick="switchSubTab('current')">Current</button>
-            <button id="btnExpired" class="sub-tab-btn active" onclick="switchSubTab('expired')">Expired</button>
+            <button id="btnCurrent" class="sub-tab-btn active" onclick="switchSubTab('current')">Current</button>
+            <button id="btnExpired" class="sub-tab-btn inactive" onclick="switchSubTab('expired')">Expired</button>
         </div>
 
         <div class="tickets-list-area">
-            <!-- قائمة Current -->
-            <div id="currentList" style="display: none;">
+            <!-- قائمة Current المطابقة للصورة الجديدة 100% -->
+            <div id="currentList" style="display: block;">
                 <div class="mini-ticket-card" onclick="reopenTicket()">
                     <div class="mini-card-header">
                         <div class="info-item">
-                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
+                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
                             <span>Bus</span>
                         </div>
                         <div class="info-item">
@@ -780,16 +784,19 @@
                         <div class="mini-card-subtitle">Bee Network Bus</div>
                     </div>
                     <div class="mini-card-timer-section">
-                        <div class="mini-timer-box">
-                            <div class="mini-timer-icon"></div>
+                        <div class="mini-timer-box-current">
+                            <svg class="mini-timer-icon-svg" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <polyline points="12 7 12 12 15 13.5"></polyline>
+                            </svg>
                             <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- قائمة Expired المطابقة للصورة تماماً -->
-            <div id="expiredList" style="display: block;">
+            <!-- قائمة Expired -->
+            <div id="expiredList" style="display: none;">
                 <div class="mini-ticket-card" onclick="openExpiredTicket()">
                     <div class="mini-card-header">
                         <div class="info-item">
@@ -843,7 +850,7 @@
         </div>
     </div>
 
-    <!-- الجزء الرابع: شاشة التذكرة المنتهية المطابقة 100% للصورة الثانية -->
+    <!-- الجزء الرابع: شاشة التذكرة المنتهية -->
     <div id="part4">
         <div class="header">
             <div class="title">Your ticket</div>
@@ -959,8 +966,17 @@
             });
         }
 
+        /* عند النقر على Close في التذكرة المفعلة -> العودة إلى قائمة My tickets والتحويل تلقائياً لـ Current */
         function handleCloseTicket() {
             document.getElementById("part2").style.display = "none";
+            switchSubTab('current');
+            document.getElementById("part3").style.display = "flex";
+        }
+
+        /* عند النقر على Close في التذكرة المنتهية -> العودة إلى قائمة My tickets والتحويل تلقائياً لـ Current */
+        function handleCloseExpiredTicket() {
+            document.getElementById("part4").style.display = "none";
+            switchSubTab('current');
             document.getElementById("part3").style.display = "flex";
         }
 
@@ -1027,11 +1043,6 @@
 
             document.getElementById("part3").style.display = "none";
             document.getElementById("part4").style.display = "block";
-        }
-
-        function handleCloseExpiredTicket() {
-            document.getElementById("part4").style.display = "none";
-            document.getElementById("part3").style.display = "flex";
         }
     </script>
 </body>
