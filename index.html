@@ -16,12 +16,12 @@
         }
 
         body {
-            background-color: #ededf0;
+            background-color: #f7f7f8;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 10px 10px 40px 10px; /* زيادة التباعد السفلي لرفع الصفحة بعيداً عن شريط البحث */
+            padding: 0;
         }
 
         /* 1. شاشة الإعداد الأولى */
@@ -31,9 +31,9 @@
             padding: 25px;
             border-radius: 20px;
             width: 100%;
-            max-width: 360px;
+            max-width: 380px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            margin-bottom: 20px; /* رفع بسيط لتفادي شريط البحث */
+            margin: 20px auto;
         }
 
         .input-group {
@@ -72,13 +72,13 @@
         #part2 {
             display: none;
             width: 100%;
-            max-width: 360px;
+            max-width: 380px;
             background: #ffffff;
             border-radius: 32px;
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
             overflow: hidden;
             border: 1px solid #e5e7eb;
-            margin-bottom: 20px; /* رفع الكارت لتجنب شريط البحث */
+            margin: 10px auto 30px auto;
         }
 
         /* الهيدر العلوي */
@@ -123,17 +123,17 @@
             position: relative;
         }
 
-        /* شريط التذكرة العلوي المطابق للصورة الحقيقية الواضحة */
+        /* شريط التذكرة العلوي */
         .ticket-info-bar {
-            background-color: #2f3742; /* درجة اللون الحقيقية */
+            background-color: #2f3742;
             padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 16px;
             font-weight: 500;
-            color: #f5ca38; /* درجة الأصفر المطابقة */
-            border-radius: 12px 12px 0 0; /* انحناءة الزوايا الحقيقية */
+            color: #f5ca38;
+            border-radius: 12px 12px 0 0;
         }
 
         .info-item {
@@ -230,7 +230,6 @@
             z-index: 1;
         }
 
-        /* الخرمات/الفتحات الجانبية */
         .notch {
             position: absolute;
             width: 30px;
@@ -245,7 +244,6 @@
         .notch-left { left: -15px; }
         .notch-right { right: -15px; }
 
-        /* حاوية النحلة */
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
@@ -271,7 +269,6 @@
             100% { left: calc(100% - 98px); }
         }
 
-        /* تفاصيل النص السفلي */
         .ticket-details {
             padding: 20px 16px;
             background: #fff;
@@ -303,7 +300,6 @@
             text-align: left;
         }
 
-        /* زر التفاصيل المنسدل */
         .view-details {
             border-top: 1px solid #eaeaea;
             padding-top: 15px;
@@ -323,7 +319,6 @@
             gap: 10px;
         }
 
-        /* أيقونة المعلومات */
         .info-circle-icon {
             width: 22px;
             height: 22px;
@@ -355,7 +350,6 @@
             transform: rotate(-135deg);
         }
 
-        /* المحتوى المخفي/الظاهر للتفاصيل */
         .collapsible-content {
             display: none;
             padding-top: 18px;
@@ -395,77 +389,238 @@
             margin-top: 4px;
         }
 
-        /* 3. الشاشة الثالثة (صفحة ما بعد الإغلاق Close) */
+        /* ------------------------------------------------------------- */
+        /* 3. الشاشة الثالثة المطابقة تماماً للصورة المرفقة (My tickets) */
+        /* ------------------------------------------------------------- */
         #part3 {
             display: none;
             width: 100%;
-            max-width: 360px;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-            padding: 30px 20px;
-            text-align: center;
-            border: 1px solid #e5e7eb;
-            margin-bottom: 25px; /* مرفوعة لأعلى لتجنب التغطية بواسطة شريط البحث */
+            max-width: 380px;
+            min-height: 100vh;
+            background: #f7f7f8;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            display: none;
+            flex-direction: column;
+            margin: 0 auto;
         }
 
-        .closed-icon {
-            width: 60px;
-            height: 60px;
-            background: #fee2e2;
-            color: #dc2626;
-            border-radius: 50%;
+        /* التبويبات العلوية الرئيسية */
+        .top-main-tabs {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px auto;
-            font-size: 28px;
-            font-weight: bold;
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding-top: 15px;
         }
 
-        .closed-title {
+        .top-tab {
+            flex: 1;
+            text-align: center;
+            padding: 14px 0;
             font-size: 20px;
             font-weight: 700;
-            color: #111;
-            margin-bottom: 10px;
+            color: #666666;
+            position: relative;
         }
 
-        .closed-desc {
+        .top-tab.active {
+            color: #111111;
+        }
+
+        .top-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #f5ca38;
+        }
+
+        /* التبويبات الفرعية (Current / Expired) */
+        .sub-tabs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            background: #fff;
+        }
+
+        .sub-tab-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .sub-tab-btn.active {
+            background-color: #2b2b2b;
+            color: #ffffff;
+        }
+
+        .sub-tab-btn.inactive {
+            background-color: transparent;
+            color: #777777;
+        }
+
+        /* منطقة كارت التذكرة المصغر */
+        .tickets-list-area {
+            padding: 20px 16px;
+            flex-grow: 1;
+            padding-bottom: 90px; /* مسافة أمان لرفع الكارت عن شريط الملاحة */
+        }
+
+        .mini-ticket-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .mini-ticket-card:active {
+            transform: scale(0.98);
+        }
+
+        /* الشريط الداكن للكارت المصغر */
+        .mini-card-header {
+            background-color: #2f3742;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f5ca38;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .mini-card-body {
+            padding: 18px;
+            background: #fff;
+        }
+
+        .mini-card-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 6px;
+        }
+
+        .mini-card-subtitle {
             font-size: 14px;
             color: #666;
-            line-height: 1.5;
-            margin-bottom: 25px;
+            font-weight: 500;
+            margin-bottom: 16px;
         }
 
-        .btn-reopen {
-            width: 100%;
-            padding: 12px;
-            background-color: #222222;
-            border: none;
+        /* شريط التوقيت الأخضر المصغر */
+        .mini-timer-box {
+            background-color: #eaf6ed;
+            color: #1c5e32;
             border-radius: 10px;
-            color: white;
-            font-weight: 600;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 15px;
-            cursor: pointer;
-            margin-bottom: 10px;
+            font-weight: 700;
         }
 
-        .btn-reset {
+        .mini-timer-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #1c5e32;
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .mini-timer-icon::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 9px;
+            width: 2px;
+            height: 6px;
+            background-color: #eaf6ed;
+        }
+
+        .mini-timer-icon::after {
+            content: '';
+            position: absolute;
+            top: 9px;
+            left: 9px;
+            width: 5px;
+            height: 2px;
+            background-color: #eaf6ed;
+        }
+
+        /* شريط الملاحة السفلي (Bottom Navigation Bar) مرفوع ومناسب لمتصفح الهاتف */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
-            padding: 12px;
-            background-color: transparent;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            color: #333;
-            font-weight: 600;
-            font-size: 15px;
+            max-width: 380px;
+            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 16px 0; /* مرفوع لحماية الأزرار من شريط البحث في المتصفح */
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #666666;
+            font-size: 11px;
+            font-weight: 500;
             cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-item.active svg {
+            stroke-width: 2.5;
+        }
+
+        .tickets-indicator {
+            width: 14px;
+            height: 3px;
+            background-color: #000;
+            border-radius: 2px;
+            margin-top: 2px;
         }
     </style>
 </head>
 <body>
 
-    <!-- الجزء الأول: واجهة الإدخال -->
+    <!-- الجزء الأول: واجهة الإعداد -->
     <div id="part1">
         <h2 style="margin-bottom: 20px; text-align: center;">إعداد التذكرة</h2>
         <div class="input-group">
@@ -475,7 +630,7 @@
         <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
     </div>
 
-    <!-- الجزء الثاني: التذكرة -->
+    <!-- الجزء الثاني: التذكرة (عرض كامل) -->
     <div id="part2">
         <div class="header">
             <div class="title">Your ticket</div>
@@ -485,17 +640,14 @@
         <div class="ticket-body">
             <div class="ticket-card">
                 
-                <!-- شريط معلومات التذكرة العلوي الداكن الحقيقي -->
                 <div class="ticket-info-bar">
                     <div class="info-item">
-                        <!-- أيقونة باص الطابقين الرسمية الدقيقة من الصورة الواضحة -->
                         <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
                             <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
                         </svg>
                         <span>Bus</span>
                     </div>
                     <div class="info-item">
-                        <!-- أيقونة الشخص (Adult) -->
                         <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
@@ -503,18 +655,15 @@
                     </div>
                 </div>
 
-                <!-- قسم الـ QR Code -->
                 <div class="qr-section">
                     <div id="qrContainer"></div>
                 </div>
 
-                <!-- شريط الوقت المتبقي -->
                 <div class="timer-bar">
                     <div class="timer-icon-filled"></div>
                     <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
                 </div>
 
-                <!-- الفاصل الحركي -->
                 <div class="animation-divider">
                     <div class="notch notch-left"></div>
                     <div class="divider-line"></div>
@@ -526,7 +675,6 @@
                     <div class="notch notch-right"></div>
                 </div>
 
-                <!-- تفاصيل النص السفلي -->
                 <div class="ticket-details">
                     <h1 class="ticket-title">1-day Bee Bus</h1>
                     
@@ -541,7 +689,6 @@
                         </li>
                     </ul>
 
-                    <!-- View Details مع أيقونة المعلومات (i) -->
                     <div class="view-details" onclick="toggleDetails(this)">
                         <div class="view-details-left">
                             <div class="info-circle-icon">i</div>
@@ -550,7 +697,6 @@
                         <span class="arrow-icon"></span>
                     </div>
 
-                    <!-- النصوص المنسدلة للتفاصيل -->
                     <div class="collapsible-content" id="detailsContent">
                         <div class="section-heading">Validity</div>
                         <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
@@ -574,13 +720,72 @@
         </div>
     </div>
 
-    <!-- الجزء الثالث: شاشة ما بعد إغلاق التذكرة -->
+    <!-- الجزء الثالث: الشاشة التي تظهر بعد الضغط على Close (مطابقة للصورة تماماً) -->
     <div id="part3">
-        <div class="closed-icon">✕</div>
-        <div class="closed-title">Ticket Closed</div>
-        <div class="closed-desc">Your ticket session has been closed. You can view your ticket again or return to setup.</div>
-        <button onclick="reopenTicket()" class="btn-reopen">View Ticket Again</button>
-        <button onclick="goBackToSetup()" class="btn-reset">Setup New Ticket</button>
+        <!-- التبويبات العلوية -->
+        <div class="top-main-tabs">
+            <div class="top-tab">Buy tickets</div>
+            <div class="top-tab active">My tickets</div>
+        </div>
+
+        <!-- التبويبات الفرعية -->
+        <div class="sub-tabs-container">
+            <button class="sub-tab-btn active">Current</button>
+            <button class="sub-tab-btn inactive">Expired</button>
+        </div>
+
+        <!-- كارت التذكرة المصغر المطابق للصورة -->
+        <div class="tickets-list-area">
+            <div class="mini-ticket-card" onclick="reopenTicket()">
+                <div class="mini-card-header">
+                    <div class="info-item">
+                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
+                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                        </svg>
+                        <span>Bus</span>
+                    </div>
+                    <div class="info-item">
+                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <span>Adult</span>
+                    </div>
+                </div>
+                <div class="mini-card-body">
+                    <div class="mini-card-title">1-day Bee Bus</div>
+                    <div class="mini-card-subtitle">Bee Network Bus</div>
+                    <div class="mini-timer-box">
+                        <div class="mini-timer-icon"></div>
+                        <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- شريط الأزرار السفلي (Bottom Navigation Bar) -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                <span>Explore</span>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>Plan</span>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Favourites</span>
+            </div>
+            <div class="nav-item active">
+                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h.01M18 12h.01"></path></svg>
+                <span>Tickets</span>
+                <div class="tickets-indicator"></div>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Account</span>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -624,28 +829,21 @@
             });
         }
 
-        /* عند الضغط على Close في التذكرة الانتقال للجزء الثالث */
+        /* عند النقر على Close الانتقال لشاشة التذاكر (My tickets) */
         function handleCloseTicket() {
             document.getElementById("part2").style.display = "none";
-            document.getElementById("part3").style.display = "block";
+            document.getElementById("part3").style.display = "flex";
         }
 
-        /* إعادة إظهار التذكرة نفسها */
+        /* عند الضغط على الكارت المصغر إعادة فتح التذكرة */
         function reopenTicket() {
             document.getElementById("part3").style.display = "none";
             document.getElementById("part2").style.display = "block";
         }
 
-        /* العودة لصفحة الإعداد الأولى */
-        function goBackToSetup() {
-            document.getElementById("part1").style.display = "block";
-            document.getElementById("part2").style.display = "none";
-            document.getElementById("part3").style.display = "none";
-            if (timerInterval) clearInterval(timerInterval);
-        }
-
         function startCountdown() {
             const countdownElement = document.getElementById('countdown_timer');
+            const miniTimerElements = document.querySelectorAll('.mini_timer_text');
             
             function updateTimer() {
                 const now = new Date();
@@ -662,10 +860,13 @@
                 if (distance > 0) {
                     const hours = Math.floor(distance / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    
-                    countdownElement.textContent = `${hours} hrs ${minutes} min.`;
+                    const timeStr = `${hours} hrs ${minutes} min.`;
+
+                    countdownElement.textContent = timeStr;
+                    miniTimerElements.forEach(el => el.textContent = timeStr);
                 } else {
                     countdownElement.textContent = "EXPIRED";
+                    miniTimerElements.forEach(el => el.textContent = "EXPIRED");
                 }
             }
 
