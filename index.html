@@ -68,8 +68,8 @@
             cursor: pointer;
         }
 
-        /* 2. حاوية الهاتف والتذكرة */
-        #part2 {
+        /* 2. حاوية الهاتف والتذكرة النشطة */
+        #part2, #part4 {
             display: none;
             width: 100%;
             max-width: 380px;
@@ -151,18 +151,18 @@
             background: #fff;
         }
 
-        #qrContainer {
+        .qrContainerClass {
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        #qrContainer img {
+        .qrContainerClass img {
             display: block;
             margin: 0 auto;
         }
 
-        /* شريط الوقت الأخضر العريض */
+        /* شريط الوقت الأخضر العريض للتذكرة النشطة */
         .timer-bar {
             background-color: #cce8d5;
             color: #1c5e32;
@@ -208,7 +208,35 @@
             border-radius: 1px;
         }
 
-        /* الفاصل الحركي */
+        /* شريط Expired الأحمر للتذكرة المنتهية (مطابق للصورة) */
+        .expired-bar {
+            background-color: #fde8e8;
+            color: #bc1c1c;
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 10px 24px 10px;
+        }
+
+        .expired-icon {
+            width: 18px;
+            height: 18px;
+            background-color: #bc1c1c;
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* الفاصل الحركي للمتحركة */
         .animation-divider {
             position: relative;
             height: 72px;
@@ -267,6 +295,21 @@
         @keyframes moveLeftRight {
             0% { left: 10px; }
             100% { left: calc(100% - 98px); }
+        }
+
+        /* فاصل التذكرة المنتهية الصلاحية (ثابت بدون حركة مثل الصورة) */
+        .static-divider {
+            position: relative;
+            height: 30px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .static-divider .divider-line {
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .ticket-details {
@@ -477,6 +520,7 @@
             border: 1px solid #e2e8f0;
             cursor: pointer;
             transition: transform 0.15s ease;
+            margin-bottom: 15px;
         }
 
         .mini-ticket-card:active {
@@ -494,7 +538,6 @@
             font-weight: 600;
         }
 
-        /* الجزء العلوي لنص التذكرة داخل الكارت المصغر */
         .mini-card-info-section {
             padding: 18px;
             background: #fff;
@@ -513,16 +556,27 @@
             font-weight: 500;
         }
 
-        /* الجزء السفلي المصل بخط رمادي دقيق للعد التنازلي */
         .mini-card-timer-section {
             padding: 14px 18px;
             background: #fff;
-            border-top: 1px solid #eceeed; /* الخط الأققي الدقيق الفاصل */
+            border-top: 1px solid #eceeed;
         }
 
         .mini-timer-box {
             background-color: #eaf6ed;
             color: #1c5e32;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .mini-expired-box {
+            background-color: #fde8e8;
+            color: #bc1c1c;
             border-radius: 10px;
             padding: 12px;
             display: flex;
@@ -628,7 +682,7 @@
         <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
     </div>
 
-    <!-- الجزء الثاني: التذكرة (عرض كامل) -->
+    <!-- الجزء الثاني: التذكرة (عرض نشط كامل) -->
     <div id="part2">
         <div class="header">
             <div class="title">Your ticket</div>
@@ -654,7 +708,7 @@
                 </div>
 
                 <div class="qr-section">
-                    <div id="qrContainer"></div>
+                    <div id="qrContainer1" class="qrContainerClass"></div>
                 </div>
 
                 <div class="timer-bar">
@@ -687,7 +741,7 @@
                         </li>
                     </ul>
 
-                    <div class="view-details" onclick="toggleDetails(this)">
+                    <div class="view-details" onclick="toggleDetails(this, 'detailsContent1')">
                         <div class="view-details-left">
                             <div class="info-circle-icon">i</div>
                             <span>View details</span>
@@ -695,9 +749,92 @@
                         <span class="arrow-icon"></span>
                     </div>
 
-                    <div class="collapsible-content" id="detailsContent">
+                    <div class="collapsible-content" id="detailsContent1">
                         <div class="section-heading">Validity</div>
                         <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
+
+                        <div class="section-heading">Ticket details</div>
+                        <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
+                        <div class="section-text">This ticket is non-refundable.</div>
+                        <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
+
+                        <div style="margin-top: 15px;">
+                            <a href="#" class="details-link">Terms and Conditions</a>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 13.5px; color: #333;">
+                            Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- الجزء الرابع: التذكرة المنتهية (مطابقة للصورة المرفقة تماماً) -->
+    <div id="part4">
+        <div class="header">
+            <div class="title">Your ticket</div>
+            <span class="close-btn" onclick="handleCloseTicket()">Close</span>
+        </div>
+
+        <div class="ticket-body">
+            <div class="ticket-card">
+                
+                <div class="ticket-info-bar">
+                    <div class="info-item">
+                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
+                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                        </svg>
+                        <span>Bus</span>
+                    </div>
+                    <div class="info-item">
+                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <span>Adult</span>
+                    </div>
+                </div>
+
+                <div class="qr-section">
+                    <div id="qrContainer2" class="qrContainerClass"></div>
+                </div>
+
+                <!-- شريط المنتهي الاحمر الخفيف -->
+                <div class="expired-bar">
+                    <div class="expired-icon">&#10005;</div>
+                    <span>Expired</span>
+                </div>
+
+                <!-- فاصل رمادي ساكن بدون حركة -->
+                <div class="static-divider">
+                    <div class="notch notch-left"></div>
+                    <div class="divider-line"></div>
+                    <div class="notch notch-right"></div>
+                </div>
+
+                <div class="ticket-details">
+                    <h1 class="ticket-title">1-day Bee Bus</h1>
+                    
+                    <ul class="details-list">
+                        <li class="details-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>Bee Network</span>
+                        </li>
+                    </ul>
+
+                    <div class="view-details active" onclick="toggleDetails(this, 'detailsContent2')">
+                        <div class="view-details-left">
+                            <div class="info-circle-icon">i</div>
+                            <span>View details</span>
+                        </div>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="collapsible-content show" id="detailsContent2">
+                        <div class="section-heading">Validity</div>
+                        <div class="section-text" id="expired_validity_text">Your ticket was valid for travel until 7 August 2026 at 3:59am.</div>
 
                         <div class="section-heading">Ticket details</div>
                         <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
@@ -726,41 +863,76 @@
         </div>
 
         <div class="sub-tabs-container">
-            <button class="sub-tab-btn active">Current</button>
-            <button class="sub-tab-btn inactive">Expired</button>
+            <button id="tabCurrentBtn" class="sub-tab-btn active" onclick="switchSubTab('current')">Current</button>
+            <button id="tabExpiredBtn" class="sub-tab-btn inactive" onclick="switchSubTab('expired')">Expired</button>
         </div>
 
         <div class="tickets-list-area">
-            <div class="mini-ticket-card" onclick="reopenTicket()">
-                <div class="mini-card-header">
-                    <div class="info-item">
-                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
-                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
-                        </svg>
-                        <span>Bus</span>
+            
+            <!-- قائمة التذاكر الحالية -->
+            <div id="currentTicketsList">
+                <div class="mini-ticket-card" onclick="reopenTicket('active')">
+                    <div class="mini-card-header">
+                        <div class="info-item">
+                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
+                                <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                            </svg>
+                            <span>Bus</span>
+                        </div>
+                        <div class="info-item">
+                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            <span>Adult</span>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
-                        <span>Adult</span>
+
+                    <div class="mini-card-info-section">
+                        <div class="mini-card-title">1-day Bee Bus</div>
+                        <div class="mini-card-subtitle">Bee Network Bus</div>
                     </div>
-                </div>
 
-                <!-- عنوان التذكرة -->
-                <div class="mini-card-info-section">
-                    <div class="mini-card-title">1-day Bee Bus</div>
-                    <div class="mini-card-subtitle">Bee Network Bus</div>
-                </div>
-
-                <!-- شريط العد التنازلي مع وجود الخط الفاصل فوقه بالضبط -->
-                <div class="mini-card-timer-section">
-                    <div class="mini-timer-box">
-                        <div class="mini-timer-icon"></div>
-                        <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
+                    <div class="mini-card-timer-section">
+                        <div class="mini-timer-box">
+                            <div class="mini-timer-icon"></div>
+                            <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- قائمة التذاكر المنتهية -->
+            <div id="expiredTicketsList" style="display: none;">
+                <div class="mini-ticket-card" onclick="reopenTicket('expired')">
+                    <div class="mini-card-header">
+                        <div class="info-item">
+                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
+                                <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                            </svg>
+                            <span>Bus</span>
+                        </div>
+                        <div class="info-item">
+                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            <span>Adult</span>
+                        </div>
+                    </div>
+
+                    <div class="mini-card-info-section">
+                        <div class="mini-card-title">1-day Bee Bus</div>
+                        <div class="mini-card-subtitle">Bee Network Bus</div>
+                    </div>
+
+                    <div class="mini-card-timer-section">
+                        <div class="mini-expired-box">
+                            <div class="expired-icon">&#10005;</div>
+                            <div>Expired</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="bottom-nav">
@@ -790,10 +962,11 @@
 
     <script>
         let timerInterval = null;
+        let currentTabState = 'current';
 
-        function toggleDetails(element) {
+        function toggleDetails(element, targetId) {
             element.classList.toggle("active");
-            const content = document.getElementById("detailsContent");
+            const content = document.getElementById(targetId);
             if (content.classList.contains("show")) {
                 content.classList.remove("show");
             } else {
@@ -806,18 +979,22 @@
             const part1 = document.getElementById("part1");
             const part2 = document.getElementById("part2");
             const part3 = document.getElementById("part3");
+            const part4 = document.getElementById("part4");
 
-            generateQR(qrText);
+            generateQR(qrText, 'qrContainer1');
+            generateQR(qrText, 'qrContainer2');
 
             part1.style.display = "none";
             part3.style.display = "none";
+            part4.style.display = "none";
             part2.style.display = "block";
 
+            setExpiredDateText();
             startCountdown();
         }
 
-        function generateQR(text) {
-            const qrContainer = document.getElementById('qrContainer');
+        function generateQR(text, containerId) {
+            const qrContainer = document.getElementById(containerId);
             qrContainer.innerHTML = '';
             new QRCode(qrContainer, {
                 text: text,
@@ -831,12 +1008,47 @@
 
         function handleCloseTicket() {
             document.getElementById("part2").style.display = "none";
+            document.getElementById("part4").style.display = "none";
             document.getElementById("part3").style.display = "flex";
         }
 
-        function reopenTicket() {
+        function reopenTicket(type) {
             document.getElementById("part3").style.display = "none";
-            document.getElementById("part2").style.display = "block";
+            if (type === 'expired') {
+                document.getElementById("part2").style.display = "none";
+                document.getElementById("part4").style.display = "block";
+            } else {
+                document.getElementById("part4").style.display = "none";
+                document.getElementById("part2").style.display = "block";
+            }
+        }
+
+        function switchSubTab(type) {
+            currentTabState = type;
+            const btnCurrent = document.getElementById("tabCurrentBtn");
+            const btnExpired = document.getElementById("tabExpiredBtn");
+            const listCurrent = document.getElementById("currentTicketsList");
+            const listExpired = document.getElementById("expiredTicketsList");
+
+            if (type === 'expired') {
+                btnCurrent.className = "sub-tab-btn inactive";
+                btnExpired.className = "sub-tab-btn active";
+                listCurrent.style.display = "none";
+                listExpired.style.display = "block";
+            } else {
+                btnExpired.className = "sub-tab-btn inactive";
+                btnCurrent.className = "sub-tab-btn active";
+                listExpired.style.display = "none";
+                listCurrent.style.display = "block";
+            }
+        }
+
+        function setExpiredDateText() {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const formatted = `Your ticket was valid for travel until ${yesterday.getDate()} ${months[yesterday.getMonth()]} ${yesterday.getFullYear()} at 3:59am.`;
+            document.getElementById("expired_validity_text").textContent = formatted;
         }
 
         function startCountdown() {
