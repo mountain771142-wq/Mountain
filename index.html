@@ -93,7 +93,7 @@
             }
         }
 
-        /* 3. شاشة قائمة التذاكر (My Tickets) */
+        /* ================= 3. شاشة قائمة التذاكر (My Tickets - بعد الضغط على Close) ================= */
         #ticketsListScreen {
             display: flex;
             flex-direction: column;
@@ -169,7 +169,7 @@
             color: #777;
         }
 
-        /* بطاقة التذكرة */
+        /* بطاقة التذكرة في القائمة */
         .tickets-content {
             padding: 0 16px;
         }
@@ -229,7 +229,7 @@
             font-weight: 700;
         }
 
-        /* ------------------ الشريط السفلي الدقيق للملاحة (Bottom Nav) ------------------ */
+        /* الشريط السفلي المضبوط للملاحة (Bottom Nav) */
         .bottom-nav {
             display: flex;
             justify-content: space-around;
@@ -274,7 +274,6 @@
             stroke-width: 2.2;
         }
 
-        /* خط التحديد السفلي الخاص بـ Tickets */
         .nav-item.active::after {
             content: '';
             position: absolute;
@@ -285,7 +284,7 @@
             border-radius: 2px;
         }
 
-        /* ------------------ 4. شاشة عرض التذكرة التفصيلية ------------------ */
+        /* ================= 4. شاشة عرض التذكرة الرئيسية (الشكل الأصلي تماماً) ================= */
         #singleTicketScreen {
             display: none;
             background: #ffffff;
@@ -297,7 +296,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 18px 20px;
             border-bottom: 1px solid #f3f4f6;
             background: #fff;
             position: sticky;
@@ -338,8 +337,8 @@
         }
 
         .ticket-info-bar {
-            background-color: #2b323b;
-            padding: 12px 18px;
+            background-color: #2f3742;
+            padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -350,7 +349,7 @@
         }
 
         .qr-section {
-            padding: 35px 20px 30px 20px;
+            padding: 42px 20px 36px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -366,19 +365,19 @@
             background-color: #cce8d5;
             color: #1c5e32;
             border-radius: 12px;
-            padding: 12px 20px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 15px;
             font-weight: 700;
-            margin: 0 10px 20px 10px;
+            margin: 0 10px 24px 10px;
         }
 
         .timer-icon-filled {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             background-color: #1c5e32;
             border-radius: 50%;
             position: relative;
@@ -389,46 +388,49 @@
             content: '';
             position: absolute;
             top: 4px;
-            left: 8px;
+            left: 9px;
             width: 2px;
-            height: 5px;
+            height: 6px;
             background-color: #cce8d5;
+            border-radius: 1px;
         }
 
         .timer-icon-filled::after {
             content: '';
             position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 4px;
+            top: 9px;
+            left: 9px;
+            width: 5px;
             height: 2px;
             background-color: #cce8d5;
+            border-radius: 1px;
         }
 
         .animation-divider {
             position: relative;
-            height: 65px;
+            height: 72px;
             background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: visible;
         }
 
         .divider-line {
-            width: calc(100% - 32px);
+            width: calc(100% - 36px);
             margin: 0 auto;
             border-bottom: 2px solid #cccccc;
             position: absolute;
             top: 50%;
-            left: 16px;
+            left: 18px;
             transform: translateY(-50%);
             z-index: 1;
         }
 
         .notch {
             position: absolute;
-            width: 26px;
-            height: 26px;
+            width: 30px;
+            height: 30px;
             background-color: #ededf0;
             border-radius: 50%;
             z-index: 4;
@@ -436,16 +438,16 @@
             transform: translateY(-50%);
         }
 
-        .notch-left { left: -13px; }
-        .notch-right { right: -13px; }
+        .notch-left { left: -15px; }
+        .notch-right { right: -15px; }
 
         .bee-hexagon-container {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             z-index: 3;
-            width: 80px;
-            height: 80px;
+            width: 88px;
+            height: 88px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -456,23 +458,24 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            display: block;
         }
 
         @keyframes moveLeftRight {
             0% { left: 10px; }
-            100% { left: calc(100% - 90px); }
+            100% { left: calc(100% - 98px); }
         }
 
         .ticket-details {
-            padding: 18px 16px;
+            padding: 20px 16px;
             background: #fff;
         }
 
         .ticket-title {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             color: #1a1a1a;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             text-align: left;
         }
 
@@ -480,8 +483,8 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 18px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .details-item {
@@ -489,31 +492,33 @@
             align-items: center;
             gap: 10px;
             color: #333;
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 600;
+            text-align: left;
         }
 
         .view-details {
             border-top: 1px solid #eaeaea;
-            padding-top: 14px;
+            padding-top: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #333;
-            font-size: 14.5px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
+            user-select: none;
         }
 
         .view-details-left {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .info-circle-icon {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background-color: #ffffff;
             color: #000000;
             border: 1.5px solid #000000;
@@ -521,17 +526,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             font-style: italic;
             font-family: Georgia, serif;
+            flex-shrink: 0;
+            line-height: 1;
         }
 
         .arrow-icon {
             border: solid #333;
             border-width: 0 2px 2px 0;
             display: inline-block;
-            padding: 3.5px;
+            padding: 4px;
             transform: rotate(45deg);
             transition: transform 0.3s ease;
         }
@@ -542,9 +549,9 @@
 
         .collapsible-content {
             display: none;
-            padding-top: 15px;
+            padding-top: 18px;
             text-align: left;
-            font-size: 13.5px;
+            font-size: 14px;
             color: #333;
         }
 
@@ -554,9 +561,9 @@
 
         .section-heading {
             font-weight: 700;
-            font-size: 15px;
-            margin-top: 12px;
-            margin-bottom: 4px;
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 6px;
             color: #111;
         }
 
@@ -564,15 +571,17 @@
 
         .section-text {
             color: #555;
-            line-height: 1.4;
-            margin-bottom: 12px;
-            font-size: 13px;
+            line-height: 1.45;
+            margin-bottom: 14px;
+            font-size: 13.5px;
         }
 
         .details-link {
             color: #333;
             text-decoration: underline;
             font-weight: 600;
+            display: inline-block;
+            margin-top: 4px;
         }
     </style>
 </head>
@@ -591,7 +600,7 @@
     <!-- 2. حاوية التطبيق -->
     <div id="appContainer" class="app-container">
 
-        <!-- أ. شاشة قائمة التذاكر (My tickets) -->
+        <!-- أ. شاشة قائمة التذاكر (My tickets - الشاشة بعد Close) -->
         <div id="ticketsListScreen">
             <div class="top-content">
                 <div class="top-tabs">
@@ -634,7 +643,7 @@
                 </div>
             </div>
 
-            <!-- الشريط السفلي الدقيق للملاحة (Bottom Nav) -->
+            <!-- الشريط السفلي المضبوط للملاحة (Bottom Nav) -->
             <div class="bottom-nav">
                 <!-- Explore -->
                 <a href="#" class="nav-item">
@@ -664,7 +673,7 @@
             </div>
         </div>
 
-        <!-- ب. شاشة التذكرة الكاملة (Single Ticket) -->
+        <!-- ب. شاشة التذكرة الكاملة (رجعت لشكلها الأصلي تماماً) -->
         <div id="singleTicketScreen">
             <div class="header">
                 <div class="title">Your ticket</div>
@@ -676,7 +685,7 @@
                     <div class="ticket-info-bar">
                         <div class="card-info-item">
                             <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
-                                <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 11.3 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                                <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 16.6 10.8 16.1 10.8 15.4 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
                             </svg>
                             <span>Bus</span>
                         </div>
@@ -734,8 +743,8 @@
                             <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
                             <div class="section-text">This ticket is non-refundable.</div>
                             <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
-                            <div style="margin-top: 12px;"><a href="#" class="details-link">Terms and Conditions</a></div>
-                            <div style="margin-top: 8px; font-size: 13px; color: #333;">Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a></div>
+                            <div style="margin-top: 15px;"><a href="#" class="details-link">Terms and Conditions</a></div>
+                            <div style="margin-top: 10px; font-size: 13.5px; color: #333;">Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a></div>
                         </div>
                     </div>
                 </div>
