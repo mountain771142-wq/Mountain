@@ -1,1046 +1,881 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Your ticket</title>
-    <!-- مكتبة توليد الـ QR Code ديناميكياً -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #f7f7f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 0;
-        }
-
-        /* 0. تنسيق الشاشة الصفراء (Splash Screen) */
-        #splashScreen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f5ca38;
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #splashScreen img {
-            width: 130px;
-            height: auto;
-            object-fit: contain;
-        }
-
-        /* 1. شاشة الإعداد الأولى */
-        #part1 {
-            background: #222222;
-            color: white;
-            padding: 25px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            margin: 20px auto;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-            text-align: center;
-        }
-
-        .btn-generate {
-            width: 100%;
-            padding: 12px;
-            background-color: #f5ca38;
-            border: none;
-            border-radius: 8px;
-            color: black;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* 2. حاوية الهاتف والتذكرة المفعلة */
-        #part2 {
-            display: none;
-            width: 100%;
-            max-width: 380px;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            margin: 10px auto 30px auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            background: #fff;
-        }
-
-        .header .title {
-            font-size: 17px;
-            font-weight: 700;
-            color: #111;
-            flex-grow: 1;
-            text-align: center;
-            margin-left: 35px;
-        }
-
-        .header .close-btn {
-            color: #666;
-            font-size: 15px;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .ticket-body {
-            padding: 16px;
-            background-color: #f7f7f8;
-        }
-
-        .ticket-card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            border: 1px solid #eef0f2;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .ticket-info-bar {
-            background-color: #2f3742;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 16px;
-            font-weight: 500;
-            color: #f5ca38;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qr-section {
-            padding: 42px 20px 36px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fff;
-        }
-
-        #qrContainer, #qrContainerExpired {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #qrContainer img, #qrContainerExpired img {
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* شريط العد التنازلي في التذكرة المفعلة */
-        .timer-bar {
-            background-color: #cce8d5;
-            color: #1c5e32;
-            border-radius: 12px;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            margin: 0 10px 24px 10px;
-        }
-
-        .timer-svg-filled {
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .animation-divider {
-            position: relative;
-            height: 72px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .divider-line {
-            width: calc(100% - 36px);
-            margin: 0 auto;
-            border-bottom: 2px solid #cccccc;
-            position: absolute;
-            top: 50%;
-            left: 18px;
-            transform: translateY(-50%);
-            z-index: 1;
-        }
-
-        .notch {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #f7f7f8;
-            border-radius: 50%;
-            z-index: 4;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .notch-left { left: -15px; }
-        .notch-right { right: -15px; }
-
-        .bee-hexagon-container {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 3;
-            width: 88px;
-            height: 88px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: moveLeftRight 1.2s linear infinite alternate;
-        }
-
-        .official-bee-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        @keyframes moveLeftRight {
-            0% { left: 10px; }
-            100% { left: calc(100% - 98px); }
-        }
-
-        .ticket-details {
-            padding: 20px 16px;
-            background: #fff;
-        }
-
-        .ticket-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #1a1a1a;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .details-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .details-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #333;
-            font-size: 14px;
-            font-weight: 600;
-            text-align: left;
-        }
-
-        .view-details {
-            border-top: 1px solid #eaeaea;
-            padding-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #333;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .view-details-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .info-circle-icon {
-            width: 22px;
-            height: 22px;
-            background-color: #ffffff;
-            color: #000000;
-            border: 1.5px solid #000000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: bold;
-            font-style: italic;
-            font-family: Georgia, serif;
-            flex-shrink: 0;
-        }
-
-        .arrow-icon {
-            border: solid #333;
-            border-width: 0 2px 2px 0;
-            display: inline-block;
-            padding: 4px;
-            transform: rotate(45deg);
-            transition: transform 0.3s ease;
-        }
-
-        .view-details.active .arrow-icon {
-            transform: rotate(-135deg);
-        }
-
-        .collapsible-content {
-            display: none;
-            padding-top: 18px;
-            text-align: left;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .collapsible-content.show {
-            display: block;
-        }
-
-        .section-heading {
-            font-weight: 700;
-            font-size: 16px;
-            margin-top: 15px;
-            margin-bottom: 6px;
-            color: #111;
-        }
-
-        .section-heading:first-child { margin-top: 0; }
-
-        .section-text {
-            color: #555;
-            line-height: 1.45;
-            margin-bottom: 14px;
-            font-size: 13.5px;
-        }
-
-        .details-link {
-            color: #333;
-            text-decoration: underline;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        /* 3. شاشة My tickets */
-        #part3 {
-            display: none;
-            width: 100%;
-            max-width: 380px;
-            min-height: 100vh;
-            background: #f7f7f8;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.08);
-            flex-direction: column;
-            margin: 0 auto;
-        }
-
-        .top-main-tabs {
-            display: flex;
-            background: #fff;
-            border-bottom: 1px solid #e5e5e5;
-            padding-top: 15px;
-        }
-
-        .top-tab {
-            flex: 1;
-            text-align: center;
-            padding: 14px 0;
-            font-size: 20px;
-            font-weight: 700;
-            color: #666666;
-            position: relative;
-        }
-
-        .top-tab.active { color: #111111; }
-
-        .top-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: #f5ca38;
-        }
-
-        .sub-tabs-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            padding: 16px;
-            background: #fff;
-        }
-
-        .sub-tab-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .sub-tab-btn.active {
-            background-color: #26282b;
-            color: #ffffff;
-        }
-
-        .sub-tab-btn.inactive {
-            background-color: transparent;
-            color: #666666;
-        }
-
-        .tickets-list-area {
-            padding: 20px 16px;
-            flex-grow: 1;
-            padding-bottom: 90px;
-        }
-
-        .mini-ticket-card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            cursor: pointer;
-            transition: transform 0.15s ease;
-        }
-
-        .mini-card-header {
-            background-color: #2f3742;
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #f5ca38;
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .mini-card-info-section {
-            padding: 18px;
-            background: #fff;
-        }
-
-        .mini-card-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #111;
-            margin-bottom: 6px;
-        }
-
-        .mini-card-subtitle {
-            font-size: 14px;
-            color: #666;
-            font-weight: 500;
-        }
-
-        /* تنسيق شريط العد التنازلي لبطاقة Current */
-        .mini-card-timer-section {
-            padding: 14px 16px;
-            background: #fff;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .mini-timer-box-current {
-            background-color: #eaf6ed;
-            color: #1a532a;
-            border-radius: 10px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 380px;
-            background: #ffffff;
-            border-top: 1px solid #e5e5e5;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0 16px 0;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #666666;
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .nav-item.active {
-            color: #000000;
-            font-weight: 700;
-        }
-
-        .nav-item svg {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .tickets-indicator {
-            width: 14px;
-            height: 3px;
-            background-color: #000;
-            border-radius: 2px;
-            margin-top: 2px;
-        }
-
-        /* تنسيقات Expired */
-        .expired-card-footer {
-            padding: 14px 18px;
-            background: #fff;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .expired-date-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333333;
-        }
-
-        .buy-again-btn {
-            background-color: #26282b;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-        }
-
-        #part4 {
-            display: none;
-            width: 100%;
-            max-width: 380px;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            margin: 10px auto 30px auto;
-        }
-
-        .expired-bar {
-            background-color: #fbeae9;
-            color: #b91c1c;
-            border-radius: 12px;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            margin: 0 10px 24px 10px;
-        }
-
-        .expired-icon-circle {
-            width: 20px;
-            height: 20px;
-            background-color: #c92a2a;
-            color: #ffffff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            line-height: 1;
-            flex-shrink: 0;
-        }
-
-        .blur-qr img, .blur-qr canvas {
-            filter: blur(4px);
-            opacity: 0.45;
-        }
-
-        .simple-divider {
-            position: relative;
-            height: 30px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Your ticket</title>
+    <!-- مكتبة توليد الـ QR Code ديناميكياً -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f7f7f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* 1. شاشة الإعداد الأولى */
+        #part1 {
+            background: #222222;
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin: 20px auto;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 12px;
+            background-color: #f5ca38;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* 2. حاوية الهاتف والتذكرة المفعلة */
+        #part2 {
+            display: none;
+            width: 100%;
+            max-width: 380px;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            margin: 10px auto 30px auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            background: #fff;
+        }
+
+        .header .title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #111;
+            flex-grow: 1;
+            text-align: center;
+            margin-left: 35px;
+        }
+
+        .header .close-btn {
+            color: #666;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .ticket-body {
+            padding: 16px;
+            background-color: #f7f7f8;
+        }
+
+        .ticket-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #eef0f2;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticket-info-bar {
+            background-color: #2f3742;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #f5ca38;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qr-section {
+            padding: 42px 20px 36px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+        }
+
+        #qrContainer, #qrContainerExpired {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #qrContainer img, #qrContainerExpired img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* شريط العد التنازلي في التذكرة المفعلة */
+        .timer-bar {
+            background-color: #cce8d5;
+            color: #1c5e32;
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 10px 24px 10px;
+        }
+
+        .timer-svg-filled {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .animation-divider {
+            position: relative;
+            height: 72px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .divider-line {
+            width: calc(100% - 36px);
+            margin: 0 auto;
+            border-bottom: 2px solid #cccccc;
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .notch {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #f7f7f8;
+            border-radius: 50%;
+            z-index: 4;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .notch-left { left: -15px; }
+        .notch-right { right: -15px; }
+
+        .bee-hexagon-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            width: 88px;
+            height: 88px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: moveLeftRight 1.2s linear infinite alternate;
+        }
+
+        .official-bee-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes moveLeftRight {
+            0% { left: 10px; }
+            100% { left: calc(100% - 98px); }
+        }
+
+        .ticket-details {
+            padding: 20px 16px;
+            background: #fff;
+        }
+
+        .ticket-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .details-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .details-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .view-details {
+            border-top: 1px solid #eaeaea;
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .view-details-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-circle-icon {
+            width: 22px;
+            height: 22px;
+            background-color: #ffffff;
+            color: #000000;
+            border: 1.5px solid #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: Georgia, serif;
+            flex-shrink: 0;
+        }
+
+        .arrow-icon {
+            border: solid #333;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 4px;
+            transform: rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+
+        .view-details.active .arrow-icon {
+            transform: rotate(-135deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding-top: 18px;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .collapsible-content.show {
+            display: block;
+        }
+
+        .section-heading {
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            color: #111;
+        }
+
+        .section-heading:first-child { margin-top: 0; }
+
+        .section-text {
+            color: #555;
+            line-height: 1.45;
+            margin-bottom: 14px;
+            font-size: 13.5px;
+        }
+
+        .details-link {
+            color: #333;
+            text-decoration: underline;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* 3. شاشة My tickets */
+        #part3 {
+            display: none;
+            width: 100%;
+            max-width: 380px;
+            min-height: 100vh;
+            background: #f7f7f8;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        .top-main-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding-top: 15px;
+        }
+
+        .top-tab {
+            flex: 1;
+            text-align: center;
+            padding: 14px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #666666;
+            position: relative;
+        }
+
+        .top-tab.active { color: #111111; }
+
+        .top-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #f5ca38;
+        }
+
+        .sub-tabs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            background: #fff;
+        }
+
+        .sub-tab-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .sub-tab-btn.active {
+            background-color: #26282b;
+            color: #ffffff;
+        }
+
+        .sub-tab-btn.inactive {
+            background-color: transparent;
+            color: #666666;
+        }
+
+        .tickets-list-area {
+            padding: 20px 16px;
+            flex-grow: 1;
+            padding-bottom: 90px;
+        }
+
+        .mini-ticket-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .mini-card-header {
+            background-color: #2f3742;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f5ca38;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .mini-card-info-section {
+            padding: 18px;
+            background: #fff;
+        }
+
+        .mini-card-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 6px;
+        }
+
+        .mini-card-subtitle {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* تنسيق شريط العد التنازلي لبطاقة Current */
+        .mini-card-timer-section {
+            padding: 14px 16px;
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .mini-timer-box-current {
+            background-color: #eaf6ed;
+            color: #1a532a;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 380px;
+            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 16px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #666666;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .tickets-indicator {
+            width: 14px;
+            height: 3px;
+            background-color: #000;
+            border-radius: 2px;
+            margin-top: 2px;
+        }
+
+        /* تنسيقات Expired */
+        .expired-card-footer {
+            padding: 14px 18px;
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expired-date-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        .buy-again-btn {
+            background-color: #26282b;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #part4 {
+            display: none;
+            width: 100%;
+            max-width: 380px;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            margin: 10px auto 30px auto;
+        }
+
+        .expired-bar {
+            background-color: #fbeae9;
+            color: #b91c1c;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 10px 24px 10px;
+        }
+
+        .expired-icon-circle {
+            width: 20px;
+            height: 20px;
+            background-color: #c92a2a;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .blur-qr img, .blur-qr canvas {
+            filter: blur(4px);
+            opacity: 0.45;
+        }
+
+        .simple-divider {
+            position: relative;
+            height: 30px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- 0. الشاشة الصفراء للتحميل -->
-    <div id="splashScreen">
-        <img src="img/bee.png.png" alt="Loading...">
-    </div>
+    <!-- الجزء الأول: واجهة الإعداد -->
+    <div id="part1">
+        <h2 style="margin-bottom: 20px; text-align: center;">إعداد التذكرة</h2>
+        <div class="input-group">
+            <label for="qrText">أدخل نص أو رابط الـ QR Code:</label>
+            <input type="text" id="qrText" value="BeeNetwork-Pass-88712">
+        </div>
+        <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
+    </div>
 
-    <!-- الجزء الأول: واجهة الإعداد -->
-    <div id="part1">
-        <h2 style="margin-bottom: 20px; text-align: center;">إعداد التذكرة</h2>
-        <div class="input-group">
-            <label for="qrText">أدخل نص أو رابط الـ QR Code:</label>
-            <input type="text" id="qrText" value="BeeNetwork-Pass-88712">
-        </div>
-        <button onclick="setUpTicket()" class="btn-generate">توليد التذكرة والتفعيل</button>
-    </div>
+    <!-- الجزء الثاني: التذكرة المفعلة (عرض كامل) -->
+    <div id="part2">
+        <div class="header">
+            <div class="title">Your ticket</div>
+            <span class="close-btn" onclick="handleCloseTicket()">Close</span>
+        </div>
 
-    <!-- الجزء الثاني: التذكرة المفعلة (عرض كامل) -->
-    <div id="part2">
-        <div class="header">
-            <div class="title">Your ticket</div>
-            <span class="close-btn" onclick="handleCloseTicket()">Close</span>
-        </div>
+        <div class="ticket-body">
+            <div class="ticket-card">
+                
+                <div class="ticket-info-bar">
+                    <div class="info-item">
+                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
+                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
+                        </svg>
+                        <span>Bus</span>
+                    </div>
+                    <div class="info-item">
+                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <span>Adult</span>
+                    </div>
+                </div>
 
-        <div class="ticket-body">
-            <div class="ticket-card">
-                
-                <div class="ticket-info-bar">
-                    <div class="info-item">
-                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38">
-                            <path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/>
-                        </svg>
-                        <span>Bus</span>
-                    </div>
-                    <div class="info-item">
-                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
-                        <span>Adult</span>
-                    </div>
-                </div>
+                <div class="qr-section">
+                    <div id="qrContainer"></div>
+                </div>
 
-                <div class="qr-section">
-                    <div id="qrContainer"></div>
-                </div>
+                <!-- شريط العد التنازلي مع أيقونة الدائرة الممتلئة والعقارب المُفرّغة -->
+                <div class="timer-bar">
+                    <svg class="timer-svg-filled" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" fill="#1c5e32"></circle>
+                        <path d="M12 6.5V12L15.5 14.2" stroke="#cce8d5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                    </svg>
+                    <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
+                </div>
 
-                <!-- شريط العد التنازلي مع أيقونة الدائرة الممتلئة والعقارب المُفرّغة -->
-                <div class="timer-bar">
-                    <svg class="timer-svg-filled" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" fill="#1c5e32"></circle>
-                        <path d="M12 6.5V12L15.5 14.2" stroke="#cce8d5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                    </svg>
-                    <div>Expires in <span id="countdown_timer">-- hrs -- min.</span></div>
-                </div>
+                <div class="animation-divider">
+                    <div class="notch notch-left"></div>
+                    <div class="divider-line"></div>
+                    <div class="bee-hexagon-container">
+                        <img src="img/bee.png.png" alt="Bee Network" class="official-bee-img">
+                    </div>
+                    <div class="notch notch-right"></div>
+                </div>
 
-                <div class="animation-divider">
-                    <div class="notch notch-left"></div>
-                    <div class="divider-line"></div>
-                    <div class="bee-hexagon-container">
-                        <img src="img/bee.png.png" alt="Bee Network" class="official-bee-img">
-                    </div>
-                    <div class="notch notch-right"></div>
-                </div>
+                <div class="ticket-details">
+                    <h1 class="ticket-title">1-day Bee Bus</h1>
+                    <ul class="details-list">
+                        <li class="details-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>Bee Network</span>
+                        </li>
+                        <li class="details-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                            <span>Ticket locked to this device</span>
+                        </li>
+                    </ul>
 
-                <div class="ticket-details">
-                    <h1 class="ticket-title">1-day Bee Bus</h1>
-                    <ul class="details-list">
-                        <li class="details-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                            <span>Bee Network</span>
-                        </li>
-                        <li class="details-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                            <span>Ticket locked to this device</span>
-                        </li>
-                    </ul>
+                    <div class="view-details" onclick="toggleDetails(this)">
+                        <div class="view-details-left">
+                            <div class="info-circle-icon">i</div>
+                            <span>View details</span>
+                        </div>
+                        <span class="arrow-icon"></span>
+                    </div>
 
-                    <div class="view-details" onclick="toggleDetails(this)">
-                        <div class="view-details-left">
-                            <div class="info-circle-icon">i</div>
-                            <span>View details</span>
-                        </div>
-                        <span class="arrow-icon"></span>
-                    </div>
+                    <div class="collapsible-content" id="detailsContent">
+                        <div class="section-heading">Validity</div>
+                        <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
+                        <div class="section-heading">Ticket details</div>
+                        <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
+                        <div class="section-text">This ticket is non-refundable.</div>
+                        <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
+                        <div style="margin-top: 15px;"><a href="#" class="details-link">Terms and Conditions</a></div>
+                        <div style="margin-top: 10px; font-size: 13.5px; color: #333;">Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a></div>
+                    </div>
+                </div>
 
-                    <div class="collapsible-content" id="detailsContent">
-                        <div class="section-heading">Validity</div>
-                        <div class="section-text">Your ticket is valid for travel once activated until 3:59am on its expiry date.</div>
-                        <div class="section-heading">Ticket details</div>
-                        <div class="section-text">Unlimited use for 1 day on any Bee Network Bus.</div>
-                        <div class="section-text">This ticket is non-refundable.</div>
-                        <div class="section-text">Tickets that are not activated will expire after 90 days.</div>
-                        <div style="margin-top: 15px;"><a href="#" class="details-link">Terms and Conditions</a></div>
-                        <div style="margin-top: 10px; font-size: 13.5px; color: #333;">Not sure? <a href="#" class="details-link" style="font-weight: normal;">See information on the Bee Network.</a></div>
-                    </div>
-                </div>
+            </div>
+        </div>
+    </div>
 
-            </div>
-        </div>
-    </div>
+    <!-- الجزء الثالث: شاشة My tickets (Current مفعّلة افتراضياً) -->
+    <div id="part3">
+        <div class="top-main-tabs">
+            <div class="top-tab">Buy tickets</div>
+            <div class="top-tab active">My tickets</div>
+        </div>
 
-    <!-- الجزء الثالث: شاشة My tickets (Current مفعّلة افتراضياً) -->
-    <div id="part3">
-        <div class="top-main-tabs">
-            <div class="top-tab">Buy tickets</div>
-            <div class="top-tab active">My tickets</div>
-        </div>
+        <div class="sub-tabs-container">
+            <button id="btnCurrent" class="sub-tab-btn active" onclick="switchSubTab('current')">Current</button>
+            <button id="btnExpired" class="sub-tab-btn inactive" onclick="switchSubTab('expired')">Expired</button>
+        </div>
 
-        <div class="sub-tabs-container">
-            <button id="btnCurrent" class="sub-tab-btn active" onclick="switchSubTab('current')">Current</button>
-            <button id="btnExpired" class="sub-tab-btn inactive" onclick="switchSubTab('expired')">Expired</button>
-        </div>
+        <div class="tickets-list-area">
+            <!-- قائمة Current المظبوطة بالكامل -->
+            <div id="currentList" style="display: block;">
+                <div class="mini-ticket-card" onclick="reopenTicket()">
+                    <div class="mini-card-header">
+                        <div class="info-item">
+                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
+                            <span>Bus</span>
+                        </div>
+                        <div class="info-item">
+                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            <span>Adult</span>
+                        </div>
+                    </div>
+                    <div class="mini-card-info-section">
+                        <div class="mini-card-title">1-day Bee Bus</div>
+                        <div class="mini-card-subtitle">Bee Network Bus</div>
+                    </div>
+                    <div class="mini-card-timer-section">
+                        <div class="mini-timer-box-current">
+                            <!-- أيقونة الدائرة الخضراء السوليد الممتلئة مع العقارب المُفرّغة -->
+                            <svg class="timer-svg-filled" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" fill="#1c5e32"></circle>
+                                <path d="M12 6.5V12L15.5 14.2" stroke="#eaf6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                            </svg>
+                            <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="tickets-list-area">
-            <!-- قائمة Current المظبوطة بالكامل -->
-            <div id="currentList" style="display: block;">
-                <div class="mini-ticket-card" onclick="reopenTicket()">
-                    <div class="mini-card-header">
-                        <div class="info-item">
-                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
-                            <span>Bus</span>
-                        </div>
-                        <div class="info-item">
-                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                            <span>Adult</span>
-                        </div>
-                    </div>
-                    <div class="mini-card-info-section">
-                        <div class="mini-card-title">1-day Bee Bus</div>
-                        <div class="mini-card-subtitle">Bee Network Bus</div>
-                    </div>
-                    <div class="mini-card-timer-section">
-                        <div class="mini-timer-box-current">
-                            <!-- أيقونة الدائرة الخضراء السوليد الممتلئة مع العقارب المُفرّغة -->
-                            <svg class="timer-svg-filled" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" fill="#1c5e32"></circle>
-                                <path d="M12 6.5V12L15.5 14.2" stroke="#eaf6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                            </svg>
-                            <div>Expires in <span class="mini_timer_text">-- hrs -- min.</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- قائمة Expired -->
+            <div id="expiredList" style="display: none;">
+                <div class="mini-ticket-card" onclick="openExpiredTicket()">
+                    <div class="mini-card-header">
+                        <div class="info-item">
+                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
+                            <span>Bus</span>
+                        </div>
+                        <div class="info-item">
+                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            <span>Adult</span>
+                        </div>
+                    </div>
 
-            <!-- قائمة Expired -->
-            <div id="expiredList" style="display: none;">
-                <div class="mini-ticket-card" onclick="openExpiredTicket()">
-                    <div class="mini-card-header">
-                        <div class="info-item">
-                            <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
-                            <span>Bus</span>
-                        </div>
-                        <div class="info-item">
-                            <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                            <span>Adult</span>
-                        </div>
-                    </div>
+                    <div class="mini-card-info-section">
+                        <div class="mini-card-title">1-day Bee Bus</div>
+                        <div class="mini-card-subtitle">Bee Network Bus</div>
+                    </div>
 
-                    <div class="mini-card-info-section">
-                        <div class="mini-card-title">1-day Bee Bus</div>
-                        <div class="mini-card-subtitle">Bee Network Bus</div>
-                    </div>
+                    <div class="expired-card-footer">
+                        <div class="expired-date-info">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <span>Expired 07/08/2026</span>
+                        </div>
+                        <button class="buy-again-btn" onclick="event.stopPropagation();">Buy again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="expired-card-footer">
-                        <div class="expired-date-info">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            <span>Expired 07/08/2026</span>
-                        </div>
-                        <button class="buy-again-btn" onclick="event.stopPropagation();">Buy again</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                <span>Explore</span>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>Plan</span>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Favourites</span>
+            </div>
+            <div class="nav-item active">
+                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h.01M18 12h.01"></path></svg>
+                <span>Tickets</span>
+                <div class="tickets-indicator"></div>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Account</span>
+            </div>
+        </div>
+    </div>
 
-        <div class="bottom-nav">
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-                <span>Explore</span>
-            </div>
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <span>Plan</span>
-            </div>
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <span>Favourites</span>
-            </div>
-            <div class="nav-item active">
-                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h.01M18 12h.01"></path></svg>
-                <span>Tickets</span>
-                <div class="tickets-indicator"></div>
-            </div>
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>Account</span>
-            </div>
-        </div>
-    </div>
+    <!-- الجزء الرابع: شاشة التذكرة المنتهية -->
+    <div id="part4">
+        <div class="header">
+            <div class="title">Your ticket</div>
+            <span class="close-btn" onclick="handleCloseExpiredTicket()">Close</span>
+        </div>
 
-    <!-- الجزء الرابع: شاشة التذكرة المنتهية -->
-    <div id="part4">
-        <div class="header">
-            <div class="title">Your ticket</div>
-            <span class="close-btn" onclick="handleCloseExpiredTicket()">Close</span>
-        </div>
+        <div class="ticket-body">
+            <div class="ticket-card">
+                
+                <div class="ticket-info-bar">
+                    <div class="info-item">
+                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
+                        <span>Bus</span>
+                    </div>
+                    <div class="info-item">
+                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <span>Adult</span>
+                    </div>
+                </div>
 
-        <div class="ticket-body">
-            <div class="ticket-card">
-                
-                <div class="ticket-info-bar">
-                    <div class="info-item">
-                        <svg width="15" height="19" viewBox="0 0 16 20" fill="#f5ca38"><path d="M 3.5 0 C 1.8 0 1 1 1 2.2 L 1 15.5 C 1 16.5 1.8 17.2 2.8 17.3 L 2.2 18.8 C 2.1 19.2 2.4 19.5 2.8 19.5 L 4 19.5 C 4.3 19.5 4.5 19.2 4.5 18.8 L 4.5 17.5 L 11.5 17.5 L 11.5 18.8 C 11.5 19.2 11.7 19.5 12 19.5 L 13.2 19.5 C 13.6 19.5 13.9 19.2 13.8 18.8 L 13.2 17.3 C 14.2 17.2 15 16.5 15 15.5 L 15 2.2 C 15 1 14.2 0 12.5 0 Z M 2.8 2.2 L 13.2 2.2 L 13.2 6.5 L 2.8 6.5 Z M 2.8 8 L 13.2 8 L 13.2 12.5 L 2.8 12.5 Z M 4 14.2 C 4.7 14.2 5.2 14.7 5.2 15.4 C 5.2 16.1 4.7 16.6 4 16.6 C 3.3 16.6 2.8 16.1 2.8 15.4 C 2.8 14.7 3.3 14.2 4 14.2 Z M 12 14.2 C 12.7 14.2 13.2 14.7 13.2 15.4 C 13.2 16.1 12.7 16.6 12 16.6 C 10.8 14.7 11.3 14.2 12 14.2 Z"/></svg>
-                        <span>Bus</span>
-                    </div>
-                    <div class="info-item">
-                        <svg width="16" height="18" viewBox="0 0 24 24" fill="#f5ca38"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                        <span>Adult</span>
-                    </div>
-                </div>
+                <div class="qr-section">
+                    <div id="qrContainerExpired" class="blur-qr"></div>
+                </div>
 
-                <div class="qr-section">
-                    <div id="qrContainerExpired" class="blur-qr"></div>
-                </div>
+                <div class="expired-bar">
+                    <div class="expired-icon-circle">&#215;</div>
+                    <div>Expired</div>
+                </div>
 
-                <div class="expired-bar">
-                    <div class="expired-icon-circle">&#215;</div>
-                    <div>Expired</div>
-                </div>
+                <div class="simple-divider">
+                    <div class="notch notch-left"></div>
+                    <div class="divider-line"></div>
+                    <div class="notch notch-right"></div>
+                </div>
 
-                <div class="simple-divider">
-                    <div class="notch notch-left"></div>
-                    <div class="divider-line"></div>
-                    <div class="notch notch-right"></div>
-                </div>
+                <div class="ticket-details">
+                    <h1 class="ticket-title">1-day Bee Bus</h1>
+                    
+                    <ul class="details-list">
+                        <li class="details-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>Bee Network</span>
+                        </li>
+                    </ul>
 
-                <div class="ticket-details">
-                    <h1 class="ticket-title">1-day Bee Bus</h1>
-                    
-                    <ul class="details-list">
-                        <li class="details-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                            <span>Bee Network</span>
-                        </li>
-                    </ul>
+                    <div class="view-details" onclick="toggleDetailsExpired(this)">
+                        <div class="view-details-left">
+                            <div class="info-circle-icon">i</div>
+                            <span>View details</span>
+                        </div>
+                        <span class="arrow-icon"></span>
+                    </div>
 
-                    <div class="view-details" onclick="toggleDetailsExpired(this)">
-                        <div class="view-details-left">
-                            <div class="info-circle-icon">i</div>
-                            <span>View details</span>
-                        </div>
-                        <span class="arrow-icon"></span>
-                    </div>
+                    <div class="collapsible-content" id="expiredDetailsContent">
+                        <div class="section-heading">Validity</div>
+                        <div class="section-text" id="expiredValidityText">Your ticket was valid for travel until 7 August 2026 at 3:59am.</div>
 
-                    <div class="collapsible-content" id="expiredDetailsContent">
-                        <div class="section-heading">Validity</div>
-                        <div class="section-text" id="expiredValidityText">Your ticket was valid for travel until 7 August 2026 at 3:59am.</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- أكواد السكريبت والوظائف -->
-    <script>
-        let countdownInterval;
-
-        function showSplash(callback) {
-            const splash = document.getElementById('splashScreen');
-            splash.style.display = 'flex';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                if (callback) callback();
-            }, 500);
-        }
-
-        function setUpTicket() {
-            showSplash(() => {
-                document.getElementById('part1').style.display = 'none';
-                document.getElementById('part2').style.display = 'block';
-
-                const text = document.getElementById('qrText').value || "BeeNetwork-Pass-88712";
-                
-                // QR التذكرة المفعّلة
-                document.getElementById('qrContainer').innerHTML = "";
-                new QRCode(document.getElementById("qrContainer"), {
-                    text: text,
-                    width: 200,
-                    height: 200
-                });
-
-                // QR التذكرة المنتهية
-                document.getElementById('qrContainerExpired').innerHTML = "";
-                new QRCode(document.getElementById("qrContainerExpired"), {
-                    text: text,
-                    width: 200,
-                    height: 200
-                });
-
-                startTimer();
-            });
-        }
-
-        function startTimer() {
-            clearInterval(countdownInterval);
-
-            // الوقت المستهدف: غداً الساعة 03:59 صباحاً
-            const now = new Date();
-            const targetTime = new Date();
-            targetTime.setDate(now.getDate() + 1);
-            targetTime.setHours(3, 59, 0, 0);
-
-            function update() {
-                const currentTime = new Date();
-                const diff = targetTime - currentTime;
-
-                if (diff <= 0) {
-                    document.getElementById('countdown_timer').innerText = "Expired";
-                    document.querySelector('.mini_timer_text').innerText = "Expired";
-                    clearInterval(countdownInterval);
-                    return;
-                }
-
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-                const formattedTime = `${hours} hrs ${minutes} min.`;
-                document.getElementById('countdown_timer').innerText = formattedTime;
-                
-                const miniTimerText = document.querySelector('.mini_timer_text');
-                if (miniTimerText) miniTimerText.innerText = formattedTime;
-            }
-
-            update();
-            countdownInterval = setInterval(update, 1000);
-        }
-
-        function handleCloseTicket() {
-            showSplash(() => {
-                document.getElementById('part2').style.display = 'none';
-                document.getElementById('part3').style.display = 'flex';
-            });
-        }
-
-        function handleCloseExpiredTicket() {
-            showSplash(() => {
-                document.getElementById('part4').style.display = 'none';
-                document.getElementById('part3').style.display = 'flex';
-            });
-        }
-
-        function reopenTicket() {
-            showSplash(() => {
-                document.getElementById('part3').style.display = 'none';
-                document.getElementById('part2').style.display = 'block';
-            });
-        }
-
-        function openExpiredTicket() {
-            showSplash(() => {
-                document.getElementById('part3').style.display = 'none';
-                document.getElementById('part4').style.display = 'block';
-            });
-        }
-
-        function switchSubTab(tab) {
-            const btnCurrent = document.getElementById('btnCurrent');
-            const btnExpired = document.getElementById('btnExpired');
-            const currentList = document.getElementById('currentList');
-            const expiredList = document.getElementById('expiredList');
-
-            if (tab === 'current') {
-                btnCurrent.className = 'sub-tab-btn active';
-                btnExpired.className = 'sub-tab-btn inactive';
-                currentList.style.display = 'block';
-                expiredList.style.display = 'none';
-            } else {
-                btnCurrent.className = 'sub-tab-btn inactive';
-                btnExpired.className = 'sub-tab-btn active';
-                currentList.style.display = 'none';
-                expiredList.style.display = 'block';
-            }
-        }
-
-        function toggleDetails(element) {
-            element.classList.toggle('active');
-            const content = document.getElementById('detailsContent');
-            content.classList.toggle('show');
-        }
-
-        function toggleDetailsExpired(element) {
-            element.classList.toggle('active');
-            const content = document.getElementById('expiredDetailsContent');
-            content.classList.toggle('show');
-        }
-    </script>
-</body>
-</html>
+                   
